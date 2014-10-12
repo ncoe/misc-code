@@ -1,0 +1,9 @@
+john is mary's husband.
+john is tom's father.
+mary is jane's mother.
+jane is anna's mother.
+
+is mary john's wife?
+is jane mary's daughter?
+is tom mary's husband?
+is anna jane's daughter?
