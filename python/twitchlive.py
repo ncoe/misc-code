@@ -22,6 +22,7 @@ following = [
     'direwolf20',
     'eddieruckus',
     'jadedcat',
+    'kihira',
     'ksptv',
     'lexmanos',
     'minalien',
