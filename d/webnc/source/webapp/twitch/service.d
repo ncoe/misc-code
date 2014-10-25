@@ -31,6 +31,9 @@ class TwitchService {
         if (configFile.exists) {
             readINIFile(properties, configFile);
         } else {
+            if (!exists("config")) {
+                mkdirRecurse("config");
+            }
             properties.initDefault();
             writeINIFile(properties, configFile);
         }

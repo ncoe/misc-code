@@ -23,6 +23,9 @@ shared static this() {
     if (configFile.exists) {
         readINIFile(properties, configFile);
     } else {
+        if (!exists("config")) {
+            mkdirRecurse("config");
+        }
         writeINIFile(properties, configFile);
     }
 

@@ -27,6 +27,9 @@ class ComicsService {
         if (configFile.exists) {
             readINIFile(config, configFile);
         } else {
+            if (!exists("config")) {
+                mkdirRecurse("config");
+            }
             config.initDefault();
             writeINIFile(config, configFile);
         }
