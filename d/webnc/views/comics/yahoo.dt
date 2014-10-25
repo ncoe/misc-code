@@ -1,0 +1,43 @@
+extends layout
+
+block title
+	title Comics
+
+block body
+	.header-cont
+		table(style="width: 100%")
+			tr
+				td<
+					center<
+						- if (nextLink !is null)
+							a(href="!{nextLink}")<
+								h1 next
+						- else
+							h1> next
+				td<
+					center<
+						h1 today
+				td<
+					center<
+						a(href="!{prevLink}")<
+							h1 prev
+			tr
+				td(colspan=3)<
+					h1<
+						center #{dayNames[today.dayOfWeek]}, #{today.year} #{monthNames[today.month-1]} #{today.day}
+
+	.content
+		- import std.algorithm, std.datetime, std.string;
+		- foreach (c; comics)
+			center<
+				- if (DayOfWeek.sun == today.dayOfWeek)
+					- if (equal(c,"mcf"))
+						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{satstamp}.gif", alt="Missing Comic: #{c} #{satstamp}")>
+					- else if (equal(c,"dsh"))
+						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.gif", alt="Missing Comic: #{c} #{todstamp}")>
+					- else
+						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.jpg", alt="Missing Comic: #{c} #{todstamp}")>
+				- else
+					img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.gif", alt="Missing Comic: #{c} #{todstamp}")>
+		center<
+			img(src="http://media.zenfs.com/en_us/News/ucomics.com/ft#{sunstamp}.jpg", alt="Foxtrot #{sunstamp}")

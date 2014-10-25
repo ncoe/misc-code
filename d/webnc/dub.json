@@ -1,0 +1,12 @@
+{
+	"name": "webnc",
+	"description": "Collection of various web apps",
+	"copyright": "Copyright © 2014, Nathan R Coe",
+	"authors": ["Nathan R Coe"],
+	"dependencies": {
+		"inifiled": ">=0.0.3",
+		"vibe-d": "~>0.7.20"
+	},
+	"stringImportPaths": ["views/twitch"],
+	"versions": ["VibeDefaultMain"]
+}

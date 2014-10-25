@@ -1,0 +1,14 @@
+extends layout
+
+block title
+	title Favorite XKCD
+
+block body
+	.header-cont
+		table(style="width: 100%")
+			tr
+				td previous pages
+				td current page
+				td next pages
+
+	.content

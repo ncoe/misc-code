@@ -1,0 +1,9 @@
+To compile the resource to link:
+rc -fo resource.res resource.rc
+
+To have the dub link a compiled resource for you...
+	"sourceFiles": ["resource.res"],
+	"preGenerateCommands": ["echo \"Auto-Generate resource.res (not implemented)\""]
+
+The following is an example fo a very simple .rc file
+101	ICON	"resource.ico"

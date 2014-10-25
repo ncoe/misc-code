@@ -1,0 +1,27 @@
+extends layout
+
+block title
+	title Twitch Live
+
+block body
+	h1<
+		center Live Twitch Streams
+
+	- if (0 == liveStreams.length)
+		p Nobody is live!!
+	- else
+		form(action="/twitch/link", method="post")
+			table
+				tr
+					th>< Watch
+					th>< Streamer
+					th>< Game
+					th>< Title
+				- foreach (entry; liveStreams)
+					tr
+						td<
+							input(type="checkbox", name="streamer", value="#{entry.name}")
+						td= entry.name
+						td= entry.game
+						td= entry.title
+			input(type="submit", value="Make link")

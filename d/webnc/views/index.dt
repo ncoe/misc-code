@@ -1,0 +1,7 @@
+extends layout
+
+block title
+	title Welcome
+
+block body
+	a(href="/twitch/live") Live Twitch Channels
