@@ -1,9 +1,21 @@
 body {
-	background-color: black; color: white;
+	background-color: black;
+	color: white;
+}
+
+.header-cont {
+	width: 100%;
+	position: fixed;
+	top: 0px;
+}
+
+.content {
+	position: center;
+	margin: 90px;
 }
 
 table, tr, th, td {
-	background-color: black; color: white;
+	background-color: black;
 	border: 2px solid white;
 	border-collapse: collapse;
 }

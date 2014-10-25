@@ -4,4 +4,10 @@ block title
 	title Welcome
 
 block body
-	a(href="/twitch/live") Live Twitch Channels
+	ul
+		li<
+			a(href="/comics/xkcd") Favorite XKCD comics
+		li<
+			a(href="/comics/yahoo") Yahoo comics
+		li<
+			a(href="/twitch/live") Live twitch channels

@@ -35,7 +35,7 @@ class TwitchService {
             writeINIFile(properties, configFile);
         }
 
-        logInfo("Initializing a TwitchService");
+        logDiagnostic("Initializing the twitch service");
     }
 
     @path("/twitch/live")
@@ -51,26 +51,30 @@ class TwitchService {
                     req.method = HTTPMethod.GET;
                 },
                 (scope res) {
-                    auto response = res.readJson();
-                    auto stream = response["stream"];
+                    if (res.statusCode < 300) {
+                        auto response = res.readJson();
+                        auto stream = response["stream"];
 
-                    if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
-                        logDebug("%s is NOT Streaming\n", name);
+                        if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
+                            logDebug("%s is NOT Streaming\n", name);
+                        } else {
+                            auto channel = stream["channel"];
+                            auto game = stream["game"];
+                            auto title = channel["status"]; // Why would they put this in status?????
+
+                            if (Json.Type.null_ == game.type) {
+                                game = "<UNKNOWN GAME>";
+                            }
+
+                            if (Json.Type.null_ == title.type) {
+                                title = "<UNTITLED>";
+                            }
+
+                            logDebug("%s is playing %s entitled %s\n", name, game, title);
+                            liveStreams ~= LiveData(name, game.get!string, title.get!string);
+                        }
                     } else {
-                        auto channel = stream["channel"];
-                        auto game = stream["game"];
-                        auto title = channel["status"]; // Why would they put this in status?????
-
-                        if (Json.Type.null_ == game.type) {
-                            game = "<UNKNOWN GAME>";
-                        }
-
-                        if (Json.Type.null_ == title.type) {
-                            title = "<UNTITLED>";
-                        }
-
-                        logDebug("%s is playing %s entitled %s\n", name, game, title);
-                        liveStreams ~= LiveData(name, game.get!string, title.get!string);
+                        logWarn("Could not find out information about %s", name);
                     }
                 }
             );

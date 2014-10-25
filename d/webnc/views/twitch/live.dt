@@ -24,4 +24,4 @@ block body
 						td= entry.name
 						td= entry.game
 						td= entry.title
-			input(type="submit", value="Make link")
+			input(type="submit", value="Submit")

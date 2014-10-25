@@ -26,7 +26,7 @@ block body
 					h1<
 						center #{dayNames[today.dayOfWeek]}, #{today.year} #{monthNames[today.month-1]} #{today.day}
 
-	.content
+	.content(style="margin: 220px")
 		- import std.algorithm, std.datetime, std.string;
 		- foreach (c; comics)
 			center<

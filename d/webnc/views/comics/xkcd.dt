@@ -7,8 +7,45 @@ block body
 	.header-cont
 		table(style="width: 100%")
 			tr
-				td previous pages
-				td current page
-				td next pages
+				th<
+					- if (beg > 0)
+						a(href="#{req.fullURL.path.toString}?page=#{page}")<
+							b Previous
+					- else
+						b> Previous
+				- for (int i=0; i<pageCnt; ++i)
+					- if (page == i)
+						- if (end < properties.length)
+							th<
+								b= i+1
+						- else
+							th<
+								b= i+1
+					- else
+						th<
+							a(href="#{req.fullURL.path.toString}?page=#{i+1}")<
+								b= i+1
+				th<
+					- if (end < properties.length)
+						a(href="#{req.fullURL.path.toString}?page=#{page+2}")<
+							b Next
+					- else
+						b> Next
 
 	.content
+		- import vibe.data.json;
+		- foreach(comic; comicList)
+			- if (Json.Type.undefined == comic.type)
+				p.error Unable to render comic
+			- else
+				center<
+					h1 #{comic["num"]} - #{comic["title"]}
+
+				- string linkText;
+				- if (comic["link"].get!string.empty)
+					- linkText = "http://xkcd.com/" ~ comic["num"].toString;
+				- else
+					- linkText = comic["link"].get!string;
+				center<
+					a(href="#{linkText}")<
+						img(src='#{comic["img"].get!string}', title='#{comic["alt"].get!string}', alt='#{comic["title"].get!string}')

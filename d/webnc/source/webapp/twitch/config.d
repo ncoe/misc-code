@@ -8,7 +8,7 @@ import vibe.core.log;
 
 @INI("Twitch App Configuration")
 struct TwitchConfig {
-    @INI("The port to listen on")
+    @INI("Streamers that should be checked")
     string[] following;
 }
 
@@ -24,7 +24,6 @@ void initDefault(ref TwitchConfig config) {
     builder.put("arashidragon");
     builder.put("aureylian");
     builder.put("bacon_donut");
-    builder.put("cpw11");
     builder.put("direwolf20");
     builder.put("eddieruckus");
     builder.put("jadedcat");

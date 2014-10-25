@@ -5,8 +5,8 @@
 	"authors": ["Nathan R Coe"],
 	"dependencies": {
 		"inifiled": ">=0.0.3",
-		"vibe-d": "~>0.7.20"
+		"vibe-d": ">=0.7.21"
 	},
-	"stringImportPaths": ["views/twitch"],
+	"stringImportPaths": ["views/comics","views/twitch"],
 	"versions": ["VibeDefaultMain"]
 }
