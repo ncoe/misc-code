@@ -17,9 +17,11 @@ import webapp.comics.service;
 import webapp.twitch.service;
 
 shared static this() {
-    auto configFile = buildPath("config","server.ini");
+    setLogFile("webnc.log", LogLevel.trace);
+    loginfo("\n\nStarting webapps...");
 
     ServerConfig properties;
+    auto configFile = buildPath("config","server.ini");
     if (configFile.exists) {
         readINIFile(properties, configFile);
     } else {

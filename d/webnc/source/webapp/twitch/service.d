@@ -38,6 +38,7 @@ class TwitchService {
             writeINIFile(properties, configFile);
         }
 
+        logTrace("The Twitch properties are: %s", properties);
         logDiagnostic("Initializing the twitch service");
     }
 
@@ -56,8 +57,9 @@ class TwitchService {
                 (scope res) {
                     if (res.statusCode < 300) {
                         auto response = res.readJson();
-                        auto stream = response["stream"];
+                        logTrace("The json body is: %s", response);
 
+                        auto stream = response["stream"];
                         if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
                             logDebug("%s is NOT Streaming\n", name);
                         } else {

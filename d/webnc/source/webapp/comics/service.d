@@ -34,6 +34,7 @@ class ComicsService {
             writeINIFile(config, configFile);
         }
 
+        logTrace("The comics properties are: %s", config);
         logDiagnostic("Initializing the comics service");
     }
 
@@ -139,7 +140,10 @@ Json getXKCDString(string comic) {
     auto res = requestHTTP(url);
     if (res.statusCode < 300) {
         scope(failure) return Json.undefined;
-        return res.readJson();
+        auto response = res.readJson();
+
+        logTrace("info.0.json: %s", response);
+        return response;
     }
 
     logWarn("Could not get metadata about XKCD %s", comic);
