@@ -47,7 +47,8 @@ void initDefault(ref TwitchConfig config) {
     builder.put("tfox83");
     builder.put("tlovetech");
     builder.put("vswe");
-    builder.put("wyldstein");
+    builder.put("wolv21");
+    builder.put("wyld");
     builder.put("x3n0ph0b3");
 
     config.following = builder.data.idup;

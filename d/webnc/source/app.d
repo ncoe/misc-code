@@ -18,7 +18,7 @@ import webapp.twitch.service;
 
 shared static this() {
     setLogFile("webnc.log", LogLevel.trace);
-    loginfo("\n\nStarting webapps...");
+    logInfo("\n\nStarting webapps...");
 
     ServerConfig properties;
     auto configFile = buildPath("config","server.ini");

@@ -42,7 +42,8 @@ following = [
     'tfox83',
     'tlovetech',
     'vswe',
-    'wyldstein',
+    'wolv21',
+    'wyld',
     'x3n0ph0b3',
 ]
 

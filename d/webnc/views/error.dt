@@ -10,4 +10,4 @@ block body
 	// - if (error.debugMessage !is null)
 	// p Debug message: #{error.debugMessage}
 	// - if (error.exception !is null)
-	p Exception: #{error.exception.msg}
+	p Exception: #{error}

@@ -11,17 +11,24 @@ block body
 		p Nobody is live!!
 	- else
 		form(action="/twitch/link", method="post")
+			input(type="radio", name="site", value="multitwitch") Multi-Twitch
+			input(type="radio", name="site", value="kadgar", checked="checked") Kadgar
 			table
 				tr
-					th>< Watch
 					th>< Streamer
 					th>< Game
 					th>< Title
+				- string allStr;
 				- foreach (entry; liveStreams)
+					- allStr ~= "/" ~ entry.name;
 					tr
 						td<
-							input(type="checkbox", name="streamer", value="#{entry.name}")
-						td= entry.name
+							input(type="checkbox", name="streamer", value="#{entry.name}")= entry.name
 						td= entry.game
 						td= entry.title
+				tr
+					td<
+						input(type="checkbox", name="option.all", value="#{allStr}") All
+					td *
+					td *
 			input(type="submit", value="Submit")
