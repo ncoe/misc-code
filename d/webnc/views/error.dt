@@ -1,13 +1,10 @@
 extends layout
 
 block title
-	- auto title = "HTTP error " ~ to!string(error.code);
+	title HTTP error #{error.code}
 
 block body
 	p An error has occured. We are really sorry about that!
 	p Have you tried turning it off and on?
 	p Error description: #{error.message}
-	// - if (error.debugMessage !is null)
-	// p Debug message: #{error.debugMessage}
-	// - if (error.exception !is null)
-	p Exception: #{error}
+	p Debug Message: #{error.debugMessage}

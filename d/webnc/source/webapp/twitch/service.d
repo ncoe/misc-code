@@ -50,32 +50,46 @@ class TwitchService {
             string uri = baseStreamUri ~ name;
             logDebug("URI %s", uri);
 
-            auto httpResponse = requestHTTP(uri);
-            if (httpResponse.statusCode < 300) {
-                auto response = httpResponse.readJson();
-                logTrace("The json body is: %s", response);
-
-                auto stream = response["stream"];
-                if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
-                    logDebug("%s is NOT Streaming\n", name);
-                } else {
-                    auto channel = stream["channel"];
-                    auto game = stream["game"];
-                    auto title = channel["status"]; // Why would they put this in status?????
-
-                    if (Json.Type.null_ == game.type) {
-                        game = "<UNKNOWN GAME>";
-                    }
-
-                    if (Json.Type.null_ == title.type) {
-                        title = "<UNTITLED>";
-                    }
-
-                    logDebug("%s is playing %s entitled %s\n", name, game, title);
-                    liveStreams ~= LiveData(name, game.get!string, title.get!string);
+            bool success = false;
+            HTTPClientResponse httpResponse;
+            for (int tries=0; tries<3; ++tries) {
+                try {
+                    httpResponse = requestHTTP(uri);
+                    success = true;
+                    break;
+                } catch(Exception e) {
+                    logWarn("Experienced an issue trying to discover the status of %s: (%s@%s): %s", name, e.file, e.line, e.msg);
                 }
+            }
+            if (!success) {
+                logError("Failed to discover the status of %s, assuming they are not streaming.", name);
             } else {
-                logWarn("Could not find out information about %s", name);
+                if (httpResponse.statusCode < 300) {
+                    auto response = httpResponse.readJson();
+                    logTrace("The json body is: %s", response);
+
+                    auto stream = response["stream"];
+                    if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
+                        logDebug("%s is NOT Streaming\n", name);
+                    } else {
+                        auto channel = stream["channel"];
+                        auto game = stream["game"];
+                        auto title = channel["status"]; // Why would they put this in status?????
+
+                        if (Json.Type.null_ == game.type) {
+                            game = "<UNKNOWN GAME>";
+                        }
+
+                        if (Json.Type.null_ == title.type) {
+                            title = "<UNTITLED>";
+                        }
+
+                        logDebug("%s is playing %s entitled %s\n", name, game, title);
+                        liveStreams ~= LiveData(name, game.get!string, title.get!string);
+                    }
+                } else {
+                    logWarn("Could not find out information about %s", name);
+                }
             }
         }
 

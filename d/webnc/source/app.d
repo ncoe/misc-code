@@ -1,8 +1,10 @@
 module app;
 
+import std.datetime : Clock, DateTime;
 import std.file;
 import std.functional;
 import std.path;
+import std.string : format;
 
 import inifiled;
 
@@ -17,8 +19,12 @@ import webapp.comics.service;
 import webapp.twitch.service;
 
 shared static this() {
-    setLogFile("webnc.log", LogLevel.trace);
-    logInfo("\n\nStarting webapps...");
+    DateTime today = cast(DateTime)Clock.currTime();
+    string logName = format("webnc_%4d%2d%2d.log", today.year, cast(int)today.month, today.day);
+    setLogFile(logName, LogLevel.trace);
+    logInfo("------------------------------------------------------------------------------------");
+    logInfo("-----------------------        Starting webapps...         -----------------------");
+    logInfo("------------------------------------------------------------------------------------");
 
     ServerConfig properties;
     auto configFile = buildPath("config","server.ini");
