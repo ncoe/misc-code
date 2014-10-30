@@ -49,3 +49,5 @@ block body
 				center<
 					a(href="#{linkText}")<
 						img(src='#{comic["img"].get!string}', title='#{comic["alt"].get!string}', alt='#{comic["title"].get!string}')
+				center<
+					a(href='http://www.explainxkcd.com/wiki/index.php/#{comic["num"]}') Explain XKCD #{comic["num"]}

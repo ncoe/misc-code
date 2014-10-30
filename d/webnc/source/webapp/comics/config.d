@@ -381,6 +381,24 @@ void initDefault(ref ComicsConfig config) {
     // Move Fast and Break Things
     builder.put("1428");
 
+    // Data
+    builder.put("1429");
+
+    // The Sake of Argument
+    builder.put("1432");
+
+    // Higgs Boson
+    builder.put("1437");
+
+    // Houston
+    builder.put("1438");
+
+    // Rack Unit
+    builder.put("1439");
+
+    // Geese
+    builder.put("1440");
+
     config.xkcd = builder.data.idup;
     logDebug("xkcd comics: %s", config.xkcd);
 }
