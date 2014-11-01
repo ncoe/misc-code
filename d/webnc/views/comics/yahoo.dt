@@ -16,7 +16,11 @@ block body
 							h1> next
 				td<
 					center<
-						h1 today
+						- if (changed)
+							a(href="/comics/yahoo")<
+								h1 today
+						- else
+							h1 today
 				td<
 					center<
 						a(href="!{prevLink}")<
@@ -24,17 +28,15 @@ block body
 			tr
 				td(colspan=3)<
 					h1<
-						center #{dayNames[today.dayOfWeek]}, #{today.year} #{monthNames[today.month-1]} #{today.day}
+						center #{dayName}, #{today.year} #{monthName} #{today.day}
 
 	.content(style="margin: 220px")
 		- import std.algorithm, std.datetime, std.string;
 		- foreach (c; comics)
 			center<
 				- if (DayOfWeek.sun == today.dayOfWeek)
-					- if (equal(c,"mcf"))
+					- if (equal(c,"dsh") || equal(c,"mcf"))
 						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{satstamp}.gif", alt="Missing Comic: #{c} #{satstamp}")>
-					- else if (equal(c,"dsh"))
-						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.gif", alt="Missing Comic: #{c} #{todstamp}")>
 					- else
 						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.jpg", alt="Missing Comic: #{c} #{todstamp}")>
 				- else

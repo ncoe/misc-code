@@ -38,7 +38,6 @@ class ComicsService {
         logDiagnostic("Initializing the comics service");
     }
 
-    @path("/comics/xkcd")
     void getXKCD(HTTPServerRequest req, HTTPServerResponse res) {
         immutable PAGE_SHIFT = 3;
         immutable PAGE_SIZE = 2^^PAGE_SHIFT;
@@ -66,10 +65,10 @@ class ComicsService {
         res.render!("xkcd.dt", req, properties, beg, end, page, pageCnt, comicList);
     }
 
-    @path("/comics/yahoo")
     void getYahoo(HTTPServerRequest req, HTTPServerResponse res) {
         DateTime today = cast(DateTime)Clock.currTime();
         string prevLink, nextLink;
+        bool changed;
 
         int year  = to!int(req.query.get("year",  to!string(today.year)));
         int month = to!int(req.query.get("month", to!string(cast(int)today.month))); // Must be cast to get the value I'm looking for
@@ -79,6 +78,7 @@ class ComicsService {
             && (month < today.month || (month == today.month
             &&  day   < today.day)))) {
 
+            changed = true;
             today = DateTime(year,month,day);
             DateTime tomorrow = today + dur!"days"(1);
             nextLink = text("yahoo?year=", tomorrow.year, "&month=", cast(int)tomorrow.month, "&day=", tomorrow.day);
@@ -89,22 +89,27 @@ class ComicsService {
         prevLink = text("yahoo?year=", yesterday.year, "&month=", cast(int)yesterday.month, "&day=", yesterday.day);
         logDebug("Got yesterday");
 
-        DateTime sunday     = today - dur!"days"(today.dayOfWeek);
+        DateTime sunday = today - dur!"days"(today.dayOfWeek);
         logDebug("Got Sunday");
 
-        DateTime saturday   = sunday - dur!"days"(1);
+        DateTime saturday = sunday - dur!"days"(1);
         logDebug("Got Saturday");
 
-        string todstamp = format("%d%02d%02d", today.year    %100, today.month,    today.day);
-        logDebug("The time stamp for today is %s",todstamp);
+        string yesstamp = format("%d%02d%02d", yesterday.year %100, yesterday.month, yesterday.day);
+        logDebug("The time stamp for yesterday is %s",yesstamp);
 
-        string sunstamp = format("%d%02d%02d", sunday.year   %100, sunday.month,   sunday.day);
-        logDebug("The time stamp for Sunday is %s",sunstamp);
+        string todstamp = format("%d%02d%02d", today.year % 100, today.month, today.day);
+        logDebug("The time stamp for today is %s",todstamp);
 
         string satstamp = format("%d%02d%02d", saturday.year %100, saturday.month, saturday.day);
         logDebug("The time stamp for Saturday is %s",satstamp);
 
-        res.render!("yahoo.dt", req, monthNames, dayNames, comics, today, todstamp, sunstamp, satstamp, prevLink, nextLink);
+        string sunstamp = format("%d%02d%02d", sunday.year % 100, sunday.month, sunday.day);
+        logDebug("The time stamp for Sunday is %s",sunstamp);
+
+        string monthName = monthNames[today.month-1];
+        string dayName = dayNames[today.dayOfWeek];
+        res.render!("yahoo.dt", monthName, dayName, comics, today, yesstamp, todstamp, sunstamp, satstamp, prevLink, changed, nextLink);
     }
 }
 

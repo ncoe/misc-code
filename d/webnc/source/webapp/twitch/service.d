@@ -42,7 +42,6 @@ class TwitchService {
         logDiagnostic("Initializing the twitch service");
     }
 
-    @path("/twitch/live")
     void getLive(HTTPServerRequest req, HTTPServerResponse res) {
         LiveData[] liveStreams;
 
@@ -96,7 +95,6 @@ class TwitchService {
         res.render!("live.dt", liveStreams);
     }
 
-    @path("/twitch/link")
     void postLink(HTTPServerRequest req, HTTPServerResponse res) {
         auto builder = appender!string();
 

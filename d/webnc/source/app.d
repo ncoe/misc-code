@@ -20,8 +20,8 @@ import webapp.twitch.service;
 
 shared static this() {
     DateTime today = cast(DateTime)Clock.currTime();
-    string logName = format("webnc_%4d%2d%2d.log", today.year, cast(int)today.month, today.day);
-    setLogFile(logName, LogLevel.trace);
+    string logName = format("webnc_%04d%02d%02d.log", today.year, cast(int)today.month, today.day);
+    setLogFile(logName, LogLevel._debug);
     logInfo("------------------------------------------------------------------------------------");
     logInfo("-----------------------        Starting webapps...         -----------------------");
     logInfo("------------------------------------------------------------------------------------");
@@ -44,8 +44,15 @@ shared static this() {
     auto router = new URLRouter;
 
     router.get("/", &homePage);
-    registerWebInterface(router, new ComicsService());
-    registerWebInterface(router, new TwitchService());
+
+    WebInterfaceSettings wis = new WebInterfaceSettings();
+    wis.urlPrefix = "/comics";
+    router.registerWebInterface(new ComicsService(), wis);
+
+    wis = new WebInterfaceSettings();
+    wis.urlPrefix = "/twitch";
+    router.registerWebInterface(new TwitchService(), wis);
+
     router.get("*", serveStaticFiles("public"));
 
     listenHTTP(settings, router);
