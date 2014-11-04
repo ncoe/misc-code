@@ -8,5 +8,5 @@
 		"vibe-d": ">=0.7.20"
 	},
 	"stringImportPaths": ["views/comics","views/twitch"],
-	"versions": ["VibeDefaultMain"]
+	"versions": ["VibeDefaultMain","VibeDebugCatchAll"]
 }

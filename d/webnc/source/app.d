@@ -4,6 +4,7 @@ import std.datetime : Clock, DateTime;
 import std.file;
 import std.functional;
 import std.path;
+import std.stdio : File;
 import std.string : format;
 
 import inifiled;
@@ -19,9 +20,21 @@ import webapp.comics.service;
 import webapp.twitch.service;
 
 shared static this() {
+    // TODO: Log rotation does not come in vanilla vibe, consider adding one
     DateTime today = cast(DateTime)Clock.currTime();
-    string logName = format("webnc_%04d%02d%02d.log", today.year, cast(int)today.month, today.day);
-    setLogFile(logName, LogLevel._debug);
+    string logName = format("webnc_%04d%02d%02d.html", today.year, cast(int)today.month, today.day);
+
+    // File infoFile = File("webnc.log", "ab");
+    // File diagFile = File(logName, "ab");
+    // auto fileLogger = cast(shared)new FileLogger(infoFile, diagFile);
+    // {
+        // fileLogger.minLevel = LogLevel.debug_;
+    // }
+    // fileLogger.registerLogger();
+
+    auto logger = cast(shared)new HTMLLogger(logName);
+    registerLogger(logger);
+
     logInfo("------------------------------------------------------------------------------------");
     logInfo("-----------------------        Starting webapps...         -----------------------");
     logInfo("------------------------------------------------------------------------------------");
