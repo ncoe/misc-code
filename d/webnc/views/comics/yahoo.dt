@@ -32,6 +32,14 @@ block body
 
 	.content(style="margin: 220px")
 		- import std.algorithm, std.datetime, std.string;
+
+		- auto buni = DateTime(2014,11,17);
+		center
+			- if (today <= buni)
+				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{cast(int)today.month}/#{format(`%04d-%02d-%02d-Buni.gif`, today.year, today.month, today.day)}", alt="No buni comic today")>
+			- else
+				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{cast(int)today.month}/#{format(`%04d-%02d-%02d-Buni.jpg`, today.year, today.month, today.day)}", alt="No buni comic today")>
+
 		- foreach (c; comics)
 			center<
 				- if (DayOfWeek.sun == today.dayOfWeek)

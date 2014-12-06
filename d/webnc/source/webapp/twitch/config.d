@@ -27,6 +27,7 @@ void initDefault(ref TwitchConfig config) {
     builder.put("direwolf20");
     builder.put("eddieruckus");
     builder.put("jadedcat");
+    builder.put("jonbams");
     builder.put("kihira");
     builder.put("ksptv");
     builder.put("lexmanos");

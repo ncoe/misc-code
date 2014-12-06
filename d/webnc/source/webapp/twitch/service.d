@@ -67,24 +67,29 @@ class TwitchService {
                     auto response = httpResponse.readJson();
                     logTrace("The json body is: %s", response);
 
-                    auto stream = response["stream"];
-                    if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
-                        logDebug("%s is NOT Streaming\n", name);
+                    logDebug("%s", response.toPrettyString);
+                    if (Json.Type.undefined != response.type && Json.Type.null_ != response.type) {
+                        auto stream = response["stream"];
+                        if (Json.Type.undefined == stream.type || Json.Type.null_ == stream.type) {
+                            logDebug("%s is NOT Streaming\n", name);
+                        } else {
+                            auto channel = stream["channel"];
+                            auto game = stream["game"];
+                            auto title = channel["status"]; // Why would they put this in status?????
+
+                            if (Json.Type.null_ == game.type) {
+                                game = "<UNKNOWN GAME>";
+                            }
+
+                            if (Json.Type.null_ == title.type) {
+                                title = "<UNTITLED>";
+                            }
+
+                            logDebug("%s is playing %s entitled %s\n", name, game, title);
+                            liveStreams ~= LiveData(name, game.get!string, title.get!string);
+                        }
                     } else {
-                        auto channel = stream["channel"];
-                        auto game = stream["game"];
-                        auto title = channel["status"]; // Why would they put this in status?????
-
-                        if (Json.Type.null_ == game.type) {
-                            game = "<UNKNOWN GAME>";
-                        }
-
-                        if (Json.Type.null_ == title.type) {
-                            title = "<UNTITLED>";
-                        }
-
-                        logDebug("%s is playing %s entitled %s\n", name, game, title);
-                        liveStreams ~= LiveData(name, game.get!string, title.get!string);
+                        logInfo("Cannot determine status of %s\n", name);
                     }
                 } else {
                     logWarn("Could not find out information about %s", name);
