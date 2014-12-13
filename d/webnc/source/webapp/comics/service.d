@@ -62,6 +62,9 @@ class ComicsService {
         }
 
         auto properties = config.xkcd;
+        res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.headers.addField("Pragma", "no-cache");
+        res.headers.addField("Expires", "0");
         res.render!("xkcd.dt", req, properties, beg, end, page, pageCnt, comicList);
     }
 
@@ -109,6 +112,9 @@ class ComicsService {
 
         string monthName = monthNames[today.month-1];
         string dayName = dayNames[today.dayOfWeek];
+        res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.headers.addField("Pragma", "no-cache");
+        res.headers.addField("Expires", "0");
         res.render!("yahoo.dt", monthName, dayName, comics, today, yesstamp, todstamp, sunstamp, satstamp, prevLink, changed, nextLink);
     }
 }

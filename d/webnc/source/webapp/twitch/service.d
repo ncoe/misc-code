@@ -101,6 +101,9 @@ class TwitchService {
             }
         }
 
+        res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.headers.addField("Pragma", "no-cache");
+        res.headers.addField("Expires", "0");
         res.render!("live.dt", liveStreams);
     }
 
