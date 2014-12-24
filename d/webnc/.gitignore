@@ -6,3 +6,5 @@ __dummy.html
 *.dll
 *.exe
 /dub.selections.json
+/dub.userprefs
+*.html
