@@ -34,11 +34,17 @@ block body
 		- import std.algorithm, std.datetime, std.string;
 
 		- auto buni = DateTime(2014,11,17);
+		// "http://www.bunicomic.com/wp-content/uploads/2014/11/2014-11-14-Buni.gif"
+		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-02-Buni.jpg"
+		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-05-Buni.jpg"
+		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-07-Buni.jpg"
+		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-09-Buni2.jpg"
+		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-12-Buni.jpg"
 		center
 			- if (today <= buni)
-				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{cast(int)today.month}/#{format(`%04d-%02d-%02d-Buni.gif`, today.year, today.month, today.day)}", alt="No buni comic today")>
+				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.gif`, today.year, today.month, today.day)}", alt="No buni comic today")>
 			- else
-				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{cast(int)today.month}/#{format(`%04d-%02d-%02d-Buni.jpg`, today.year, today.month, today.day)}", alt="No buni comic today")>
+				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.jpg`, today.year, today.month, today.day)}", alt="No buni comic today")>
 
 		- foreach (c; comics)
 			center<
