@@ -17,6 +17,7 @@ struct LiveData {
     string name;
     string game;
     string title;
+	string preview;
 }
 
 class TwitchService {
@@ -60,6 +61,7 @@ class TwitchService {
                     logWarn("Experienced an issue trying to discover the status of %s: (%s@%s): %s", name, e.file, e.line, e.msg);
                 }
             }
+
             if (!success) {
                 logError("Failed to discover the status of %s, assuming they are not streaming.", name);
             } else {
@@ -89,8 +91,15 @@ class TwitchService {
                                 }
                             }
 
+                            auto preview = stream["preview"];
+                            string medium;
+                            if (Json.Type.object == preview.type) {
+                                auto mediumJson = preview["medium"];
+                                medium = mediumJson.get!string;
+                            }
+
                             logDebug("%s is playing %s entitled %s\n", name, game, title);
-                            liveStreams ~= LiveData(name, game.get!string, title);
+                            liveStreams ~= LiveData(name, game.get!string, title, medium);
                         }
                     } else {
                         logInfo("Cannot determine status of %s\n", name);

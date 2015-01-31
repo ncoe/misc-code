@@ -7,6 +7,6 @@
 		"inifiled": ">=0.0.3",
 		"vibe-d": ">=0.7.20"
 	},
-	"stringImportPaths": ["views/comics","views/twitch"],
+	"stringImportPaths": ["views","views/comics","views/twitch"],
 	"versions": ["VibeDefaultMain","VibeDebugCatchAll"]
 }

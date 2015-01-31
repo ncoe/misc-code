@@ -15,20 +15,30 @@ block body
 			input(type="radio", name="site", value="kadgar", checked="checked") Kadgar
 			table
 				tr
-					th>< Streamer
-					th>< Game
-					th>< Title
+					th< Streamer
+					th< Preview
+					th< Game
+					th< Title
+
 				- string allStr;
 				- foreach (entry; liveStreams)
 					- allStr ~= "/" ~ entry.name;
 					tr
 						td<
 							input(type="checkbox", name="streamer", value="#{entry.name}")= entry.name
+						- if (entry.preview !is null)
+							td<
+								img(src="#{entry.preview}", alt="Game Preview")
+						- else
+							p No preview available
 						td= entry.game
 						td= entry.title
+
 				tr
 					td<
 						input(type="checkbox", name="option.all", value="#{allStr}") All
 					td *
 					td *
+					td *
+
 			input(type="submit", value="Submit")
