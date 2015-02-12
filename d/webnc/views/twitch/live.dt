@@ -11,6 +11,7 @@ block body
 		p Nobody is live!!
 	- else
 		form(action="/twitch/link", method="post")
+			input(type="radio", name="site", value="twitch") Twitch (Single stream only)
 			input(type="radio", name="site", value="multitwitch") Multi-Twitch
 			input(type="radio", name="site", value="kadgar", checked="checked") Kadgar
 			table

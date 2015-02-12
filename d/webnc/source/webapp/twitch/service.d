@@ -119,10 +119,14 @@ class TwitchService {
     void postLink(HTTPServerRequest req, HTTPServerResponse res) {
         auto builder = appender!string();
 
-        if (req.form["site"] == "multitwitch") {
+        if (req.form["site"] == "twitch") {
+            builder.put("http://www.twitch.tv");
+        } else if (req.form["site"] == "multitwitch") {
             builder.put("http://www.multitwitch.tv");
-        } else {
+        } else if (req.form["site"] == "kadgar") {
             builder.put("http://www.kadgar.net/live");
+        } else {
+            assert(false, "Unexpected site encountered: " ~ req.form["site"]);
         }
 
         if (auto all = req.form.get("option.all")) {
