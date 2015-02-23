@@ -1,5 +1,6 @@
 module webapp.twitch.service;
 
+import std.algorithm : sort;
 import std.file;
 import std.path;
 
@@ -17,7 +18,8 @@ struct LiveData {
     string name;
     string game;
     string title;
-	string preview;
+    string preview;
+    int viewers;
 }
 
 class TwitchService {
@@ -44,7 +46,7 @@ class TwitchService {
     }
 
     void getLive(HTTPServerRequest req, HTTPServerResponse res) {
-        LiveData[] liveStreams;
+        LiveData[] rawStreams;
 
         foreach (name; properties.following) {
             string uri = baseStreamUri ~ name;
@@ -91,15 +93,17 @@ class TwitchService {
                                 }
                             }
 
-                            auto preview = stream["preview"];
                             string medium;
+                            auto preview = stream["preview"];
                             if (Json.Type.object == preview.type) {
                                 auto mediumJson = preview["medium"];
                                 medium = mediumJson.get!string;
                             }
 
+                            auto viewers = stream["viewers"];
+
                             logDebug("%s is playing %s entitled %s\n", name, game, title);
-                            liveStreams ~= LiveData(name, game.get!string, title, medium);
+                            rawStreams ~= LiveData(name, game.get!string, title, medium, viewers.get!int);
                         }
                     } else {
                         logInfo("Cannot determine status of %s\n", name);
@@ -110,6 +114,8 @@ class TwitchService {
             }
         }
 
+        auto liveStreams = sort!("a.viewers > b.viewers")(rawStreams);
+
         res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
         res.headers.addField("Pragma", "no-cache");
         res.headers.addField("Expires", "0");
@@ -118,21 +124,23 @@ class TwitchService {
 
     void postLink(HTTPServerRequest req, HTTPServerResponse res) {
         auto builder = appender!string();
+        auto streamers = req.form.getAll("streamer");
+        logInfo("#streamers=%d", streamers.length);
 
-        if (req.form["site"] == "twitch") {
-            builder.put("http://www.twitch.tv");
-        } else if (req.form["site"] == "multitwitch") {
-            builder.put("http://www.multitwitch.tv");
-        } else if (req.form["site"] == "kadgar") {
-            builder.put("http://www.kadgar.net/live");
+        if (streamers.length > 1) {
+            if (req.form["site"] == "multitwitch") {
+                builder.put("http://www.multitwitch.tv");
+            } else {
+                builder.put("http://www.kadgar.net/live");
+            }
         } else {
-            assert(false, "Unexpected site encountered: " ~ req.form["site"]);
+            builder.put("http://www.twitch.tv");
         }
 
         if (auto all = req.form.get("option.all")) {
             builder.put(all);
         } else {
-            foreach(param; req.form.getAll("streamer")) {
+            foreach(param; streamers) {
                 logDebug("Streamer chosen: %s", param);
 
                 builder.put("/");

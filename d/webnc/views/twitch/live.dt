@@ -11,15 +11,16 @@ block body
 		p Nobody is live!!
 	- else
 		form(action="/twitch/link", method="post")
-			input(type="radio", name="site", value="twitch") Twitch (Single stream only)
+			input(type="radio", name="site", value="twitch", checked="checked") Twitch (Single stream only)
+			input(type="radio", name="site", value="kadgar") Kadgar
 			input(type="radio", name="site", value="multitwitch") Multi-Twitch
-			input(type="radio", name="site", value="kadgar", checked="checked") Kadgar
 			table
 				tr
 					th< Streamer
 					th< Preview
 					th< Game
 					th< Title
+					th< Viewers
 
 				- string allStr;
 				- foreach (entry; liveStreams)
@@ -34,10 +35,12 @@ block body
 							p No preview available
 						td= entry.game
 						td= entry.title
+						td= entry.viewers
 
 				tr
 					td<
 						input(type="checkbox", name="option.all", value="#{allStr}") All
+					td *
 					td *
 					td *
 					td *
