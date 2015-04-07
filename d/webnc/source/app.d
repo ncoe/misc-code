@@ -21,8 +21,8 @@ import webapp.twitch.service;
 
 shared static this() {
     // TODO: Log rotation does not come in vanilla vibe, consider adding one
-    DateTime today = cast(DateTime)Clock.currTime();
-    string logName = format("webnc_%04d%02d%02d.html", today.year, cast(int)today.month, today.day);
+//    DateTime today = cast(DateTime)Clock.currTime();
+//    string logName = format("webnc_%04d%02d%02d.html", today.year, cast(int)today.month, today.day);
 
     // File infoFile = File("webnc.log", "ab");
     // File diagFile = File(logName, "ab");
@@ -32,6 +32,10 @@ shared static this() {
     // }
     // fileLogger.registerLogger();
 
+    auto logName = "webnc.html";
+    if (logName.exists) {
+        logName.remove();
+    }
     auto logger = cast(shared)new HTMLLogger(logName);
     registerLogger(logger);
 
