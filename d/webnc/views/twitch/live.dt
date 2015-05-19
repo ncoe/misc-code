@@ -28,6 +28,9 @@ block body
 					tr
 						td<
 							input(type="checkbox", name="streamer", value="#{entry.name}")= entry.name
+							br
+							button(type="button", onclick="location.href='http://www.twitch.tv/#{entry.name}'")
+								| Watch
 						- if (entry.preview !is null)
 							td<
 								img(src="#{entry.preview}", alt="Game Preview")

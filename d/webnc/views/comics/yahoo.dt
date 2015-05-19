@@ -41,10 +41,11 @@ block body
 		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-09-Buni2.jpg"
 		// "http://www.bunicomic.com/wp-content/uploads/2015/01/2015-01-12-Buni.jpg"
 		center
-			- if (today <= buni)
-				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.gif`, today.year, today.month, today.day)}", alt="No buni comic today")>
-			- else
-				img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.jpg`, today.year, today.month, today.day)}", alt="No buni comic today")>
+			a(href="http://www.bunicomic.com")
+				- if (today <= buni)
+					img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.gif`, today.year, today.month, today.day)}", alt="No buni comic today")>
+				- else
+					img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.jpg`, today.year, today.month, today.day)}", alt="No buni comic today")>
 
 		- foreach (c; comics)
 			center<
