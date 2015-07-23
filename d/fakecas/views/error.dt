@@ -1,0 +1,10 @@
+extends layout
+
+block title
+	title HTTP error #{error.code}
+
+block body
+	p An error has occured. We are really sorry about that!
+	p Have you tried turning it off and on?
+	p Error description: #{error.message}
+	p Debug Message: #{error.debugMessage}

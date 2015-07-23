@@ -1,0 +1,12 @@
+{
+	"name": "fakecas",
+	"description": "A very fake CAS server suitable for debugging.",
+	"copyright": "Copyright © 2015, Nathan R Coe",
+	"authors": ["Nathan R Coe"],
+	"dependencies": {
+		"inifiled": ">=0.0.3",
+		"vibe-d": "~>0.7.19"
+	},
+	"stringImportPaths": ["views"],
+	"versions": ["VibeDefaultMain"]
+}
