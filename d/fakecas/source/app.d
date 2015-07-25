@@ -135,7 +135,7 @@ void validate(HTTPServerRequest req, HTTPServerResponse res) {
     enforceHTTP("service" in req.query, HTTPStatus.badRequest, "Required field missing: service");
     enforceHTTP("ticket" in req.query, HTTPStatus.badRequest, "Required field missing: ticket");
 
-    res.writeBody("yes\n");
+    res.writeBody(format("yes\n%s\n", req.query["ticket"]));
 }
 
 shared static this() {
