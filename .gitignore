@@ -3,3 +3,6 @@
 /d/fakecas/*.dll
 /d/fakecas/dub.selections.json
 /d/fakecas/config
+/lua/.idea
+/lua/target
+/lua/*.iml
