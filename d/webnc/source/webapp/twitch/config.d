@@ -38,6 +38,7 @@ void initDefault(ref TwitchConfig config) {
     builder.put("progwml6");
     builder.put("purplementat");
     builder.put("quetzi");
+    builder.put("roraxplays");
     builder.put("sacheverell");
     builder.put("Scarletr0se");
     builder.put("slowpoke101");
