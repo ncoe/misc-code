@@ -39,6 +39,17 @@
                     </execution>
                     <!-- Less important -->
                     <execution>
+                        <id>rename-program-events</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/events.lua</sourceFile>
+                            <destinationFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/events</destinationFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>rename-program-hey</id>
                         <phase>test</phase>
                         <goals>

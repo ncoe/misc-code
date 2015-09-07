@@ -1,0 +1,2 @@
+This programs broadcasts a rednet message by either using ncore from a resource pack, or loading a local copy of it.
+It is expected that the listen program is running and waiting for a rednet message from this program or another.

@@ -1,0 +1,43 @@
+------------------------
+Event API Functions
+------------------------
+
+registerEvent
+    Registers an event to be handled by specifying both the name of an event, and the function that should be executed.
+
+cancelEvent
+    Removes an event listener by taking the function that is currently handling an event. The event name can also be
+    provided to reduce the search space to find the function.
+
+runEventLoop
+    Runs indefinitely, listening for events and calls functions that have been registered to handle those events.
+
+------------------------
+ComputerCraft API Addons
+------------------------
+
+isModem
+    Determine if the provided table could be a modem.
+
+openModem
+    Opens the argument if it duck-types to a modem.
+
+closeModem
+    Closes the argument if it duck-types to a modem.
+
+isOpenModem
+    Determines if the argument duck-types to a modem that is currently open.
+
+pwrap
+    Wraps wrap by using wrap to get a peripheral on a side, and adding extra data to the returned table.
+    The new key is "pinfo", which is a table containing "pside" and "ptype".
+
+pfind
+    Rewrites the find function of the peripheral api by making use of "pwrap" to get the peripherals.
+
+------------------------
+Debug API Helpers
+------------------------
+
+print_r
+    Debug tool for generically printing a single provided argument recursively.

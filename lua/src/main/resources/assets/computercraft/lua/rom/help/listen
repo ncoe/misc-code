@@ -1,0 +1,2 @@
+This program listens for any rednet message, and displays information about it on screen.
+The ncore api should either be part of a resource pack included for the instance or server, or should be a local program.
