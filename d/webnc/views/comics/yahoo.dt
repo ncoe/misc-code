@@ -5,6 +5,8 @@ block title
 
 block body
 	.header-cont
+		form(action="/", method="GET")
+			input(type="submit", name="Back", value="Back")
 		table(style="width: 100%")
 			tr
 				td<

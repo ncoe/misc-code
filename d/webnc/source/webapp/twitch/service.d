@@ -48,6 +48,13 @@ class TwitchService {
     void getLive(HTTPServerRequest req, HTTPServerResponse res) {
         LiveData[] rawStreams;
 
+        bool edge;
+        if (auto value = req.headers["User-Agent"]) {
+            import std.regex;
+            auto r = regex(`\bEdge/`);
+            edge = !value.matchFirst(r).empty;
+        }
+
         foreach (name; properties.following) {
             string uri = baseStreamUri ~ name;
             logDebug("URI %s", uri);
@@ -119,7 +126,7 @@ class TwitchService {
         res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
         res.headers.addField("Pragma", "no-cache");
         res.headers.addField("Expires", "0");
-        res.render!("live.dt", liveStreams);
+        res.render!("live.dt", liveStreams, edge);
     }
 
     void postLink(HTTPServerRequest req, HTTPServerResponse res) {
@@ -146,6 +153,25 @@ class TwitchService {
                 builder.put("/");
                 builder.put(param);
             }
+        }
+
+        if (req.form.get("hls")) {
+            builder.put("/hls");
+        }
+
+        logDebug("Redirecting to: %s", builder.data);
+        res.redirect(builder.data);
+    }
+
+    @path("/linkImmediate/:name")
+    void postLinkImmediate(HTTPServerRequest req, HTTPServerResponse res, string _name) {
+        auto builder = appender!string();
+
+        builder.put("http://www.twitch.tv/");
+        builder.put(_name);
+
+        if (req.form.get("hls")) {
+            builder.put("/hls");
         }
 
         logDebug("Redirecting to: %s", builder.data);

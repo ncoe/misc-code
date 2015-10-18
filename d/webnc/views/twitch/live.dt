@@ -4,6 +4,8 @@ block title
 	title Twitch Live
 
 block body
+	form(action="/", method="GET")
+		input(type="submit", name="Back", value="Back")
 	h1<
 		center Live Twitch Streams
 
@@ -11,6 +13,11 @@ block body
 		p Nobody is live!!
 	- else
 		form(action="/twitch/link", method="post")
+			- if (edge)
+				input(type="checkbox", name="hls", value="hls", checked="checked") Use HLS
+			- else
+				strike
+					input(type="checkbox", name="hls", value="hls", disabled="disabled") Use HLS
 			input(type="radio", name="site", value="twitch", checked="checked") Twitch (Single stream only)
 			input(type="radio", name="site", value="kadgar") Kadgar
 			input(type="radio", name="site", value="multitwitch") Multi-Twitch
@@ -29,8 +36,7 @@ block body
 						td<
 							input(type="checkbox", name="streamer", value="#{entry.name}")= entry.name
 							br
-							button(type="button", onclick="location.href='http://www.twitch.tv/#{entry.name}'")
-								| Watch
+							input(type="submit", value="Watch", formaction="/twitch/linkImmediate/#{entry.name}")
 						- if (entry.preview !is null)
 							td<
 								img(src="#{entry.preview}", alt="Game Preview")
