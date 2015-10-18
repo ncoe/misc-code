@@ -399,6 +399,6 @@ void initDefault(ref ComicsConfig config) {
     // Geese
     builder.put("1440");
 
-    config.xkcd = builder.data.idup;
+    config.xkcd = builder.data.dup;
     logDebug("xkcd comics: %s", config.xkcd);
 }

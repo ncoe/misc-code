@@ -55,6 +55,6 @@ void initDefault(ref TwitchConfig config) {
     builder.put("x3n0ph0b3");
     builder.put("xcompwiz");
 
-    config.following = builder.data.idup;
+    config.following = builder.data.dup;
     logDebug("following: %s", config.following);
 }
