@@ -5,8 +5,6 @@ block title
 
 block body
 	.header-cont
-		form(action="/", method="GET")
-			input(type="submit", name="Back", value="Back")
 		table(style="width: 100%")
 			tr
 				th<
@@ -33,6 +31,8 @@ block body
 							b Next
 					- else
 						b> Next
+		form(action="/", method="GET")
+			input(type="submit", name="Back", value="Back")
 
 	.content
 		- import vibe.data.json;
