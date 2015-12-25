@@ -98,13 +98,13 @@ class ComicsService {
         DateTime saturday = sunday - dur!"days"(1);
         logDebug("Got Saturday");
 
-        string yesstamp = format("%d%02d%02d", yesterday.year %100, yesterday.month, yesterday.day);
+        string yesstamp = format("%d%02d%02d", yesterday.year % 100, yesterday.month, yesterday.day);
         logDebug("The time stamp for yesterday is %s",yesstamp);
 
         string todstamp = format("%d%02d%02d", today.year % 100, today.month, today.day);
         logDebug("The time stamp for today is %s",todstamp);
 
-        string satstamp = format("%d%02d%02d", saturday.year %100, saturday.month, saturday.day);
+        string satstamp = format("%d%02d%02d", saturday.year % 100, saturday.month, saturday.day);
         logDebug("The time stamp for Saturday is %s",satstamp);
 
         string sunstamp = format("%d%02d%02d", sunday.year % 100, sunday.month, sunday.day);

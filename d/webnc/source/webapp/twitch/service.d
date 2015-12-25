@@ -63,8 +63,13 @@ class TwitchService {
             HTTPClientResponse httpResponse;
             for (int tries=0; tries<3; ++tries) {
                 try {
-                    httpResponse = requestHTTP(uri);
+                    httpResponse = requestHTTP(uri,
+                        (scope request) {
+                            request.headers.addField("Accept", "application/vnd.twitchtv.v3+json");
+                        }
+                        );
                     success = true;
+                    logDebug("Found data about: %s", name);
                     break;
                 } catch(Exception e) {
                     logWarn("Experienced an issue trying to discover the status of %s: (%s@%s): %s", name, e.file, e.line, e.msg);
@@ -76,44 +81,41 @@ class TwitchService {
             } else {
                 if (httpResponse.statusCode < 300) {
                     auto response = httpResponse.readJson();
-                    logTrace("The json body is: %s", response);
+                    logDebug("The json body is: %s", response);
 
-                    logDebug("%s", response.toPrettyString);
+                    logTrace("%s", response.toPrettyString);
                     if (Json.Type.object == response.type) {
                         auto stream = response["stream"];
-                        if (Json.Type.object != stream.type) {
-                            logDebug("%s is NOT Streaming\n", name);
-                        } else {
+                        if (Json.Type.null_ != stream.type) {
+                            // logInfo("%s is currently live", name);
+
                             auto game = stream["game"];
                             if (Json.Type.string != game.type) {
                                 game = "<UNKNOWN GAME>";
                             }
 
-                            string title;
-                            auto channel = stream["channel"];
-                            if (Json.Type.object == channel.type) {
-                                auto status = channel["status"];
-                                if (Json.Type.string != status.type) {
-                                    title = "<UNTITLED>";
-                                } else {
-                                    title = status.get!string; // Why would they put this in status?????
-                                }
-                            }
-
-                            string medium;
                             auto preview = stream["preview"];
-                            if (Json.Type.object == preview.type) {
-                                auto mediumJson = preview["medium"];
-                                medium = mediumJson.get!string;
+                            auto channel = stream["channel"];
+
+                            auto title = channel["status"];
+                            if (Json.Type.string != title.type) {
+                                title = "<UNKNOWN TITLE>";
                             }
 
-                            auto viewers = stream["viewers"];
-
-                            logDebug("%s is playing %s entitled %s\n", name, game, title);
-                            rawStreams ~= LiveData(name, game.get!string, title, medium, viewers.get!int);
+                            logDebug("%s is playing %s entitled %s\n",
+                                     name,
+                                     game,
+                                     title);
+                            rawStreams ~= LiveData(name,
+                                                   game.get!string,
+                                                   title.get!string,
+                                                   preview["small"].get!string,
+                                                   stream["viewers"].get!int);
+                        } else {
+                            logInfo("%s is offline", name);
                         }
                     } else {
-                        logInfo("Cannot determine status of %s\n", name);
+                       logInfo("Cannot determine status of %s\n", name);
                     }
                 } else {
                     logWarn("Could not find out information about %s", name);
@@ -157,6 +159,7 @@ class TwitchService {
 
         if (req.form.get("hls")) {
             builder.put("/hls");
+            // http://www.twitch.tv/morvelaira/chat?popout=
         }
 
         logDebug("Redirecting to: %s", builder.data);
@@ -172,6 +175,7 @@ class TwitchService {
 
         if (req.form.get("hls")) {
             builder.put("/hls");
+            // http://www.twitch.tv/morvelaira/chat?popout=
         }
 
         logDebug("Redirecting to: %s", builder.data);

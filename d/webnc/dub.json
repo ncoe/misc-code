@@ -4,9 +4,10 @@
 	"copyright": "Copyright © 2014, Nathan R Coe",
 	"authors": ["Nathan R Coe"],
 	"dependencies": {
-		"inifiled": ">=0.0.3",
-		"vibe-d": ">=0.7.25"
+		"inifiled": ">=0.0.6",
+		"vibe-d": {"path": "../../../../rejectedsoftware/vibe.d"}
 	},
 	"stringImportPaths": ["views","views/comics","views/twitch"],
-	"versions": ["VibeDefaultMain","VibeDebugCatchAll"]
+	"versions": ["VibeDefaultMain","VibeDebugCatchAll"],
+    "subConfigurations": {"vibe-d": "win32"}
 }
