@@ -1,13 +1,23 @@
 {
+	"authors": [
+		"Nathan R Coe"
+	],
+	"description": "A collection of various web apps",
 	"name": "webnc",
-	"description": "Collection of various web apps",
-	"copyright": "Copyright © 2014, Nathan R Coe",
-	"authors": ["Nathan R Coe"],
 	"dependencies": {
-		"inifiled": ">=0.0.6",
-		"vibe-d": {"path": "../../../../rejectedsoftware/vibe.d"}
+		"vibe-d": "~>0.7.26",
+		"inifiled": "~>0.0.6"
 	},
-	"stringImportPaths": ["views","views/comics","views/twitch"],
-	"versions": ["VibeDefaultMain","VibeDebugCatchAll"],
-    "subConfigurations": {"vibe-d": "win32"}
+	"license": "proprietary",
+	"copyright": "Copyright © 2016, Nathan R Coe",
+	"stringImportPaths": [
+		"views",
+		"views/comics",
+		"views/twitch",
+		"translations"
+	],
+	"versions": [
+		"VibeDefaultMain",
+		"VibeDebugCatchAll"
+	]
 }

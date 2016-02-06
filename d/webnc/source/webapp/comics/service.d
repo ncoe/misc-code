@@ -1,28 +1,63 @@
-module webapp.comics.service;
+﻿module webapp.comics.service;
 
+import core.time;
 import std.conv;
-import std.datetime;
+import std.datetime : Clock, DateTime;
 import std.file;
 import std.path;
-import std.string;
+import std.string : format;
 
 import inifiled;
-
 import vibe.core.log;
 import vibe.data.json;
 import vibe.http.client;
+import vibe.http.router;
 import vibe.http.server;
-import vibe.web.common;
+import vibe.web.i18n;
 
 import webapp.comics.config;
 
+string[] comics = [
+    "tas",   // The Argyle Sweater
+    "crbc",  // B.C.
+    "cl",    // Close to Home
+    "dsh",   // Dark Side of the Horse
+    "dt",    // Dilbert
+    "far",   // Farcus
+    "fk",    // Frank & Ernest
+    "ga",    // Garfield
+    "mcf",   // Moderately Confused
+    "nq",    // Non Sequitur
+    "ob",    // Overboard
+    "pe",    // Peanuts
+    "pb",    // Pearls Before Swine
+    "crrub", // Rubs
+    "crwiz", // Wizard of ID
+    "zi",    // Ziggy
+];
+
+// A "traits" structure used to define the available translation files at compile time.
+struct TranslationContext {
+    import std.typetuple;
+    // Throw an error when an translation string is missing/mistyped.
+    enum enforceExistingKeys = true;
+    // The list of supported languages (the same family of languages will
+    // automatically be matched to the closest candidate, e.g. en_GB->en_US)
+    alias languages = TypeTuple!("en_US");
+    // The base name of the translation files - the full names will be
+    // example.en_US.po and example.de_DE.po. Any number of these mixin
+    // statements can be used.
+    mixin translationModule!"labels";
+}
+
+@translationContext!TranslationContext
 class ComicsService {
     private {
         ComicsConfig config;
     }
 
     this() {
-        auto configFile = buildPath("config","xkcd.ini");
+        auto configFile = buildPath("config", "xkcd.ini");
 
         if (configFile.exists) {
             readINIFile(config, configFile);
@@ -41,6 +76,8 @@ class ComicsService {
     void getXKCD(HTTPServerRequest req, HTTPServerResponse res) {
         immutable PAGE_SHIFT = 3;
         immutable PAGE_SIZE = 2^^PAGE_SHIFT;
+
+        logDebug("Processing xkcd comics");
 
         auto page = to!int(req.query.get("page", "1")) - 1;
         int beg = page << PAGE_SHIFT;
@@ -69,6 +106,8 @@ class ComicsService {
     }
 
     void getYahoo(HTTPServerRequest req, HTTPServerResponse res) {
+        logDebug("Processing yahoo comics");
+
         DateTime today = cast(DateTime)Clock.currTime();
         string prevLink, nextLink;
         bool changed;
@@ -80,7 +119,6 @@ class ComicsService {
         if (    year  < today.year  || (year  == today.year
             && (month < today.month || (month == today.month
             &&  day   < today.day)))) {
-
             changed = true;
             today = DateTime(year,month,day);
             DateTime tomorrow = today + dur!"days"(1);
@@ -110,36 +148,12 @@ class ComicsService {
         string sunstamp = format("%d%02d%02d", sunday.year % 100, sunday.month, sunday.day);
         logDebug("The time stamp for Sunday is %s",sunstamp);
 
-        string monthName = monthNames[today.month-1];
-        string dayName = dayNames[today.dayOfWeek];
         res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
         res.headers.addField("Pragma", "no-cache");
         res.headers.addField("Expires", "0");
-        res.render!("yahoo.dt", monthName, dayName, comics, today, yesstamp, todstamp, sunstamp, satstamp, prevLink, changed, nextLink);
+        res.render!("yahoo.dt", comics, today, yesstamp, todstamp, sunstamp, satstamp, prevLink, changed, nextLink);
     }
 }
-
-string[] comics = [
-    "tas",   // The Argyle Sweater
-    "crbc",  // B.C.
-    "cl",    // Close to Home
-    "dsh",   // Dark Side of the Horse
-    "dt",    // Dilbert
-    "far",   // Farcus
-    "fk",    // Frank & Ernest
-    "ga",    // Garfield
-    "mcf",   // Moderately Confused
-    "nq",    // Non Sequitur
-    "ob",    // Overboard
-    "pe",    // Peanuts
-    "pb",    // Pearls Before Swine
-    "crrub", // Rubs
-    "crwiz", // Wizard of ID
-    "zi",    // Ziggy
-];
-
-string[] monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-string[] dayNames   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 /* Potentially expensive call to get the metadata about an xkcd comic. */
 Json getXKCDString(string comic) {

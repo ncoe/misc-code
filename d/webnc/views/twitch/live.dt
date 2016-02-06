@@ -13,45 +13,30 @@ block body
 		p Nobody is live!!
 	- else
 		form(action="/twitch/link", method="post")
-			- if (edge)
-				input(type="checkbox", name="hls", value="hls", checked="checked") Use HLS
-			- else
-				strike
-					input(type="checkbox", name="hls", value="hls", disabled="disabled") Use HLS
-			input(type="radio", name="site", value="twitch", checked="checked") Twitch (Single stream only)
-			input(type="radio", name="site", value="kadgar") Kadgar
+			input(type="radio", name="site", value="kadgar", checked="checked") Kadgar
 			input(type="radio", name="site", value="multitwitch") Multi-Twitch
+
 			table
 				tr
-					th< Streamer
-					th< Preview
-					th< Game
-					th< Title
-					th< Viewers
-
-				- string allStr;
+					th Select
+					th Name
+					th Preview
+					th Game
+					th Title
+					th Viewers
 				- foreach (entry; liveStreams)
-					- allStr ~= "/" ~ entry.name;
 					tr
-						td<
-							input(type="checkbox", name="streamer", value="#{entry.name}")= entry.name
-							br
-							input(type="submit", value="Watch", formaction="/twitch/linkImmediate/#{entry.name}")
-						- if (entry.preview !is null)
-							td<
+						td
+							input(type="checkbox", name="streamer", value="#{entry.name}")
+						td
+							a(href="http://twitch.tv/#{entry.name}")= entry.name
+						td
+							- if (entry.preview !is null)
 								img(src="#{entry.preview}", alt="Game Preview")
-						- else
-							p No preview available
+							- else
+								p No preview available
 						td= entry.game
 						td= entry.title
 						td= entry.viewers
-
-				tr
-					td<
-						input(type="checkbox", name="option.all", value="#{allStr}") All
-					td *
-					td *
-					td *
-					td *
 
 			input(type="submit", value="Submit")

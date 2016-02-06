@@ -1,7 +1,7 @@
 extends layout
 
 block title
-	title Comics
+	title Yahoo Comics
 
 block body
 	.header-cont
@@ -28,6 +28,9 @@ block body
 			tr
 				td(colspan=3)<
 					h1<
+						- import vibe.web.web;
+						- auto dayName = trWeb("date.weekday." ~ to!string(today.dayOfWeek) ~ ".name");
+						- auto monthName = trWeb("date.month." ~ to!string(today.month) ~ ".longname");
 						center #{dayName}, #{today.year} #{monthName} #{today.day}
 		form(action="/", method="GET")
 			input(type="submit", name="Back", value="Back")
