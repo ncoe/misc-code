@@ -82,22 +82,6 @@ class TwitchService {
             builder.put("http://www.twitch.tv");
         }
 
-        if (auto all = req.form.get("option.all")) {
-            builder.put(all);
-        } else {
-            foreach(param; streamers) {
-                logDebug("Streamer chosen: %s", param);
-
-                builder.put("/");
-                builder.put(param);
-            }
-        }
-
-        if (req.form.get("hls")) {
-            builder.put("/hls");
-            // http://www.twitch.tv/morvelaira/chat?popout=
-        }
-
         logDebug("Redirecting to: %s", builder.data);
         res.redirect(builder.data);
     }
@@ -132,17 +116,51 @@ LiveData checkStream(string name) {
         if (Json.Type.null_ != jsonObj.stream.type) {
             logTrace("Raw data: %s", jsonObj);
 
-            string game = jsonObj.stream.game.get!string;
-            string title = jsonObj.stream.channel.status.get!string;
-            string preview = jsonObj.stream.preview.medium.get!string;
-            int viewers = jsonObj.stream.viewers.get!int;
+            auto streamField = jsonObj.stream;
+            if (Json.Type.object == streamField.type) {
+                auto gameField = streamField.game;
 
-            return new LiveData(name, game, title, preview, viewers);
+                string game = "<UNKNOWN>";
+                if (Json.Type.string == gameField.type) {
+                    game = streamField.game.get!string;
+                }
+
+                string title = "<UNKNOWN>";
+                auto channelField = streamField.channel;
+                if (Json.Type.object == channelField.type) {
+                    auto statusField = channelField.status;
+                    if (Json.Type.string == statusField.type) {
+                        title = statusField.get!string;
+                    }
+                }
+
+                string preview = null;
+                auto previewField = streamField.preview;
+                if (Json.Type.object == previewField.type) {
+                    auto smallField = previewField.small;
+                    auto mediumField = previewField.medium;
+                    auto largeField = previewField.large;
+                    if (Json.Type.string == mediumField.type) {
+                        preview = mediumField.get!string;
+                    } else if (Json.Type.string == largeField.type) {
+                        preview = largeField.get!string;
+                    } else if (Json.Type.string == smallField.type) {
+                        preview = smallField.get!string;
+                    }
+                }
+
+                int viewers = 0;
+                auto viewersField = streamField.viewers;
+                if (Json.Type.int_ == viewersField.type) {
+                    viewers = viewersField.get!int;
+                }
+
+                return new LiveData(name, game, title, preview, viewers);
+            }
         }
     }
 
     httpResponse.disconnect;
-
     return null;
 }
 
