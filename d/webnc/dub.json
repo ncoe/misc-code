@@ -5,7 +5,7 @@
 	"description": "A collection of various web apps",
 	"name": "webnc",
 	"dependencies": {
-		"vibe-d": "~>0.7.26",
+		"vibe-d": "~>0.7.27",
 		"inifiled": "~>0.0.6"
 	},
 	"license": "proprietary",
