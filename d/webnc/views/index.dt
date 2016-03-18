@@ -8,6 +8,6 @@ block body
 		li<
 			a(href="/comics/xkcd") Favorite XKCD comics
 		li<
-			a(href="/comics/yahoo") Yahoo comics
+			a(href="/comics/custom") Custom list of comics
 		li<
 			a(href="/twitch/live") Live twitch channels

@@ -105,8 +105,8 @@ class ComicsService {
         res.render!("xkcd.dt", req, properties, beg, end, page, pageCnt, comicList);
     }
 
-    void getYahoo(HTTPServerRequest req, HTTPServerResponse res) {
-        logDebug("Processing yahoo comics");
+    void getCustom(HTTPServerRequest req, HTTPServerResponse res) {
+        logDebug("Processing custom comics");
 
         DateTime today = cast(DateTime)Clock.currTime();
         string prevLink, nextLink;
@@ -122,12 +122,12 @@ class ComicsService {
             changed = true;
             today = DateTime(year,month,day);
             DateTime tomorrow = today + dur!"days"(1);
-            nextLink = text("yahoo?year=", tomorrow.year, "&month=", cast(int)tomorrow.month, "&day=", tomorrow.day);
+            nextLink = text("custom?year=", tomorrow.year, "&month=", cast(int)tomorrow.month, "&day=", tomorrow.day);
             logDiagnostic("Using the date: %d/%d/%d",year,month,day);
         }
 
         DateTime yesterday  = today - dur!"days"(1);
-        prevLink = text("yahoo?year=", yesterday.year, "&month=", cast(int)yesterday.month, "&day=", yesterday.day);
+        prevLink = text("custom?year=", yesterday.year, "&month=", cast(int)yesterday.month, "&day=", yesterday.day);
         logDebug("Got yesterday");
 
         DateTime sunday = today - dur!"days"(today.dayOfWeek);
@@ -151,7 +151,7 @@ class ComicsService {
         res.headers.addField("Cache-Control", "no-cache, no-store, must-revalidate");
         res.headers.addField("Pragma", "no-cache");
         res.headers.addField("Expires", "0");
-        res.render!("yahoo.dt", comics, today, yesstamp, todstamp, sunstamp, satstamp, prevLink, changed, nextLink);
+        res.render!("custom.dt", comics, today, yesstamp, todstamp, sunstamp, satstamp, prevLink, changed, nextLink);
     }
 }
 

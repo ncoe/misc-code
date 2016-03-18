@@ -1,7 +1,7 @@
 extends layout
 
 block title
-	title Yahoo Comics
+	title Custom Comics
 
 block body
 	.header-cont
@@ -17,7 +17,7 @@ block body
 				td<
 					center<
 						- if (changed)
-							a(href="/comics/yahoo")<
+							a(href="/comics/custom")<
 								h1 today
 						- else
 							h1 today
@@ -52,14 +52,16 @@ block body
 				- else
 					img(src="http://www.bunicomic.com/wp-content/uploads/#{today.year}/#{format(`%02d`, today.month)}/#{format(`%04d-%02d-%02d-Buni.jpg`, today.year, today.month, today.day)}", alt="No buni comic today")>
 
+		// http://synd.imgsrv.uclick.com/comics/tas/2016/tas160317.gif
 		- foreach (c; comics)
 			center<
 				- if (DayOfWeek.sun == today.dayOfWeek)
 					- if (equal(c,"dsh") || equal(c,"mcf"))
-						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{satstamp}.gif", alt="Missing Comic: #{c} #{satstamp}")>
+						img(src="http://synd.imgsrv.uclick.com/comics/#{c}/#{today.year}/#{c}#{satstamp}.gif", alt="Missing Comic: #{c} #{satstamp}")>
 					- else
-						img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.jpg", alt="Missing Comic: #{c} #{todstamp}")>
+						img(src="http://synd.imgsrv.uclick.com/comics/#{c}/#{today.year}/#{c}#{todstamp}.jpg", alt="Missing Comic: #{c} #{todstamp}")>
 				- else
-					img(src="http://media.zenfs.com/en_us/News/ucomics.com/#{c}#{todstamp}.gif", alt="Missing Comic: #{c} #{todstamp}")>
+					img(src="http://synd.imgsrv.uclick.com/comics/#{c}/#{today.year}/#{c}#{todstamp}.gif", alt="Missing Comic: #{c} #{todstamp}")>
 		center<
-			img(src="http://media.zenfs.com/en_us/News/ucomics.com/ft#{sunstamp}.jpg", alt="Foxtrot #{sunstamp}")
+			img(src="http://synd.imgsrv.uclick.com/comics/ft/#{today.year}/ft#{sunstamp}.jpg", alt="Foxtrot #{sunstamp}")
+
