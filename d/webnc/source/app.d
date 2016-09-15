@@ -5,7 +5,6 @@ import vibe.d;
 
 import server.config;
 import webapp.comics.service;
-import webapp.twitch.service;
 
 shared static this() {
     ServerConfig properties;
@@ -30,10 +29,6 @@ shared static this() {
     WebInterfaceSettings wis = new WebInterfaceSettings();
     wis.urlPrefix = "/comics";
     router.registerWebInterface(new ComicsService(), wis);
-
-    wis = new WebInterfaceSettings();
-    wis.urlPrefix = "/twitch";
-    router.registerWebInterface(new TwitchService(), wis);
 
     router.get("*", serveStaticFiles("public"));
     listenHTTP(settings, router);
