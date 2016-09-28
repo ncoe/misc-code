@@ -11,9 +11,40 @@
 
     <fileSets>
         <fileSet>
-            <directory>${project.build.outputDirectory}</directory>
-            <useDefaultExcludes>true</useDefaultExcludes>
-            <outputDirectory>/</outputDirectory>
+            <!-- Include all files in the help directory -->
+            <directory>src/main/resources/assets/computercraft/lua/rom/help</directory>
+            <outputDirectory>assets/computercraft/lua/rom/help</outputDirectory>
+            <lineEnding>unix</lineEnding>
         </fileSet>
     </fileSets>
+
+    <files>
+        <!-- APIs -->
+        <file>
+            <source>src/main/resources/assets/computercraft/lua/rom/apis/ncore.lua</source>
+            <outputDirectory>assets/computercraft/lua/rom/apis</outputDirectory>
+            <destName>ncore</destName>
+            <lineEnding>unix</lineEnding>
+        </file>
+
+        <!-- Programs -->
+        <file>
+            <source>src/main/resources/assets/computercraft/lua/rom/programs/events.lua</source>
+            <outputDirectory>assets/computercraft/lua/rom/programs</outputDirectory>
+            <destName>events</destName>
+            <lineEnding>unix</lineEnding>
+        </file>
+        <file>
+            <source>src/main/resources/assets/computercraft/lua/rom/programs/hey.lua</source>
+            <outputDirectory>assets/computercraft/lua/rom/programs</outputDirectory>
+            <destName>hey</destName>
+            <lineEnding>unix</lineEnding>
+        </file>
+        <file>
+            <source>src/main/resources/assets/computercraft/lua/rom/programs/listen.lua</source>
+            <outputDirectory>assets/computercraft/lua/rom/programs</outputDirectory>
+            <destName>listen</destName>
+            <lineEnding>unix</lineEnding>
+        </file>
+    </files>
 </assembly>

@@ -131,7 +131,7 @@ function cancelEvent(eventFunc, eventName)
         error("Expected to be provided a function to call", 2)
     end
 
-    local function helper(en,needle,haystack)
+    local function helper(needle,haystack)
         local removed = false
         if needle and haystack then
             for idx,ef in pairs(haystack) do
@@ -156,13 +156,13 @@ function cancelEvent(eventFunc, eventName)
         end
 
         local eventArray = registeredEvents[eventName]
-        removed = helper(eventName, eventFunc, eventArray)
+        removed = helper(eventFunc, eventArray)
         if removed and 0 == table.getn(eventArray) then
             registeredEvents[eventName] = nil
         end
     else
         for en,eventArray in pairs(registeredEvents) do
-            removed = helper(en, eventFunc, eventArray) or removed
+            removed = helper(eventFunc, eventArray) or removed
             if removed and 0 == table.getn(eventArray) then
                 registeredEvents[en] = nil
             end

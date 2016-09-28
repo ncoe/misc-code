@@ -8,73 +8,13 @@
     <artifactId>minecraft-cc-pack</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <packaging>pom</packaging>
+
     <build>
         <plugins>
             <plugin>
-                <groupId>com.coderplus.maven.plugins</groupId>
-                <artifactId>copy-rename-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>rename-api-ncore</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/apis/ncore.lua</sourceFile>
-                            <destinationFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/apis/ncore</destinationFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>rename-program-reactor_control</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/reactor_control.lua</sourceFile>
-                            <destinationFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/reactor_control</destinationFile>
-                        </configuration>
-                    </execution>
-                    <!-- Less important -->
-                    <execution>
-                        <id>rename-program-events</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/events.lua</sourceFile>
-                            <destinationFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/events</destinationFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>rename-program-hey</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/hey.lua</sourceFile>
-                            <destinationFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/hey</destinationFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>rename-program-listen</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/listen.lua</sourceFile>
-                            <destinationFile>${project.build.outputDirectory}/assets/computercraft/lua/rom/programs/listen</destinationFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4.1</version>
                 <configuration>
                     <descriptor>src/assembly/dep.xml</descriptor>
                 </configuration>
