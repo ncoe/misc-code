@@ -86,17 +86,17 @@
 height = 255
 
 -- need to enable rednet first incase using locate
-rednet.open( "right" )
+rednet.open("right")
 
 local function printUsage()
     print("")
-    print( "Usages:" )
-    print( "gps-deploy <x> <y> <z> [height]" )
-    print( "Example: gps-deploy 1 1 1 20")
-    print( "would deploy the satelite to y=21")
-    print( "gps-deploy locate [height]")
-    print( "if you have working GPS use this")
-    print( "to find out the coords over GPS")
+    print("Usages:")
+    print("gps-deploy <x> <y> <z> [height]")
+    print("Example: gps-deploy 1 1 1 20")
+    print("would deploy the satelite to y=21")
+    print("gps-deploy locate [height]")
+    print("if you have working GPS use this")
+    print("to find out the coords over GPS")
 end
 
 -- confirm default height isn't set above 254
@@ -105,12 +105,12 @@ end
 local tArgs = { ... }
 
 if tArgs[1] == "locate" then
-    print ("")
-    print ("Locating GPS signal...")
+    print("")
+    print("Locating GPS signal...")
     xcord, ycord, zcord = gps.locate(5, false)
-    if xcord==nil then
+    if xcord == nil then
         print("")
-        print ("No GPS signal detected, please rerun manually")
+        print("No GPS signal detected, please rerun manually")
         return
     end
     if tArgs[2] == nil then
@@ -118,7 +118,7 @@ if tArgs[1] == "locate" then
     else
         height = tonumber(tArgs[2])
     end
-    print ("gps-deploy ",xcord," ",ycord," ",zcord," height: ",height)
+    print("gps-deploy ", xcord, " ", ycord, " ", zcord, " height: ", height)
     xcord = tonumber(xcord)
     ycord = tonumber(ycord)
     zcord = tonumber(zcord)
@@ -140,11 +140,10 @@ else
             end
         end
     end
-
 end
 
 if height > ycord and height < 256 then
-    height = height-ycord
+    height = height - ycord
 end
 
 if height > 255 then
@@ -163,31 +162,31 @@ end
 -- (original code)
 local mov = {}
 
-mov.forward = function ()
+mov.forward = function()
     while not turtle.forward() do
         sleep(1)
     end
     return true
 end
-mov.back = function ()
+mov.back = function()
     while not turtle.back() do
         sleep(1)
     end
     return true
 end
-mov.up = function ()
+mov.up = function()
     while not turtle.up() do
         sleep(1)
     end
     return true
 end
-mov.down = function ()
+mov.down = function()
     while not turtle.down() do
         sleep(1)
     end
     return true
 end
-mov.place = function ()
+mov.place = function()
     while not turtle.place() do
         sleep(1)
     end
@@ -209,44 +208,44 @@ local base = nil
 if type(turtle.getFuelLevel()) == "string" then
     print("No-fuel mode")
 else
-    if turtle.getFuelLevel() < (tonumber(height)*2)+70 then
-        while turtle.getFuelLevel() < (tonumber(height)*2)+70 do
+    if turtle.getFuelLevel() < (tonumber(height) * 2) + 70 then
+        while turtle.getFuelLevel() < (tonumber(height) * 2) + 70 do
             turtle.select(1)
-            realcoal=(((tonumber(height)*2)+70)-turtle.getFuelLevel())/80
-            if realcoal>=64 then
-                coal=64
+            realcoal = (((tonumber(height) * 2) + 70) - turtle.getFuelLevel()) / 80
+            if realcoal >= 64 then
+                coal = 64
             else
-                coal=math.ceil(realcoal)
+                coal = math.ceil(realcoal)
             end
             if turtle.refuel(tonumber(coal)) == false then
-                fuel=((tonumber(height)*2)+70)-turtle.getFuelLevel()
+                fuel = ((tonumber(height) * 2) + 70) - turtle.getFuelLevel()
                 print("")
                 print("You ran out of fuel in slot 1")
-                print("Please insert "..fuel.." fuel or "..realcoal.." coal to continue")
+                print("Please insert " .. fuel .. " fuel or " .. realcoal .. " coal to continue")
                 print("Waiting 30 seconds for fuel or exiting")
-                i=0
-                while i<=30 do
+                i = 0
+                while i <= 30 do
                     sleep(1)
-                    realcoal=(((tonumber(height)*2)+70)-turtle.getFuelLevel())/80
-                    if realcoal>=64 then
-                        coal=64
+                    realcoal = (((tonumber(height) * 2) + 70) - turtle.getFuelLevel()) / 80
+                    if realcoal >= 64 then
+                        coal = 64
                     else
-                        coal=math.ceil(realcoal)
+                        coal = math.ceil(realcoal)
                     end
                     turtle.refuel(tonumber(coal))
-                    if turtle.getFuelLevel() >= (tonumber(height)*2)+70 then
+                    if turtle.getFuelLevel() >= (tonumber(height) * 2) + 70 then
                         print("")
                         print("Turtle Fueled")
-                        i=31
+                        i = 31
                     end
-                    if i==30 then
-                        fuel=((tonumber(height)*2)+70)-turtle.getFuelLevel()
+                    if i == 30 then
+                        fuel = ((tonumber(height) * 2) + 70) - turtle.getFuelLevel()
                         print("")
                         print("Not enough fuel provided")
-                        print("Please provide "..fuel.." fuel or "..realcoal.." coal and try again")
+                        print("Please provide " .. fuel .. " fuel or " .. realcoal .. " coal and try again")
                         return
                     end
-                    i=i+1
+                    i = i + 1
                 end
             end
         end
@@ -286,31 +285,31 @@ end
 -- there's a more elegant way of doing this.
 -- I don't believe there's a way to check if
 -- the items are correct without using compare
-monitor=0
-modem=0
-diskdrive=0
-disk=0
+monitor = 0
+modem = 0
+diskdrive = 0
+disk = 0
 print("")
 turtle.select(2)
 if turtle.getItemCount(2) < 4 then
     print("Please place at least 4 computers into slot two")
-    monitor=1
+    monitor = 1
 end
 turtle.select(3)
 if turtle.getItemCount(2) < 4 then
     print("Please place at least 4 modems into slot three")
-    modem=1
+    modem = 1
 end
 turtle.select(4)
 if turtle.getItemCount(2) < 1 then
     print("Please place 1 disk drive into slot four if a -mining turtle-")
     print("Please place 4 disk drives into slot four if a -standard turtle-")
-    diskdrive=1
+    diskdrive = 1
 end
 turtle.select(5)
 if turtle.getItemCount(2) < 1 then
     print("Please place 1 disk into slot five")
-    disk=1
+    disk = 1
 end
 
 if monitor == 1 or modem == 1 or diskdrive == 1 or disk == 1 then
@@ -320,35 +319,35 @@ end
 
 -- calculate the coordinates of the 4 satelite arrays
 
-newycord=tonumber(ycord)+tonumber(height)
+newycord = tonumber(ycord) + tonumber(height)
 
 if newycord > 255 then newycord = 255 end
 
-toycordns=newycord
-toycordwe=newycord-3
+toycordns = newycord
+toycordwe = newycord - 3
 
 if toycordns >= 255 or toycordwe >= 255 then
-    toycordns=255
-    toycordwe=252
+    toycordns = 255
+    toycordwe = 252
 end
 
 local set = {}
-set[1] = {x = tonumber(xcord),z = tonumber(zcord)+3,y = tonumber(toycordns)}
-set[2] = {x = tonumber(xcord)-3,z = tonumber(zcord),y = tonumber(toycordwe)}
-set[3] = {x = tonumber(xcord),z = tonumber(zcord)-3,y = tonumber(toycordns)}
-set[4] = {x = tonumber(xcord)+3,z = tonumber(zcord),y = tonumber(toycordwe)}
+set[1] = { x = tonumber(xcord), z = tonumber(zcord) + 3, y = tonumber(toycordns) }
+set[2] = { x = tonumber(xcord) - 3, z = tonumber(zcord), y = tonumber(toycordwe) }
+set[3] = { x = tonumber(xcord), z = tonumber(zcord) - 3, y = tonumber(toycordns) }
+set[4] = { x = tonumber(xcord) + 3, z = tonumber(zcord), y = tonumber(toycordwe) }
 
 -- start the climb up to the correct ycord
 while not turtle.up() do
     term.clear()
-    term.setCursorPos(1,1)
+    term.setCursorPos(1, 1)
     term.write("Please get off me")
 end
-if ycord+tonumber(height) >= 255 then
+if ycord + tonumber(height) >= 255 then
     while turtle.up() do -- sends it up till it hits max hight
     end
 else
-    for i = 3,tonumber(height) do
+    for i = 3, tonumber(height) do
         turtle.up()
     end
 end
@@ -356,9 +355,9 @@ end
 -- once at the correct height, deploy GPS array
 -- this is a mixture of my own code and the
 -- original code
-for a = 1,4 do
+for a = 1, 4 do
     --forward two
-    for i = 1,2 do
+    for i = 1, 2 do
         mov.forward()
     end
     turtle.select(2)
@@ -377,7 +376,7 @@ for a = 1,4 do
     -- makes it a startup script so the computers will
     -- start back up properly after chunk unloading
     fs.delete("disk/startup")
-    file = fs.open("disk/startup","w")
+    file = fs.open("disk/startup", "w")
     file.write([[
 fs.copy("disk/install","startup")
 fs.delete("disk/startup")
@@ -391,14 +390,14 @@ os.reboot()
 ]])
     file.close()
     if fs.exists("custom") then
-        fs.copy("custom","disk/custom")
+        fs.copy("custom", "disk/custom")
     end
-    file = fs.open("disk/install","w")
+    file = fs.open("disk/install", "w")
     file.write([[
 if fs.exists("custom") then
-	shell.run("custom","host",]]..set[a]["x"]..","..set[a]["y"]..","..set[a]["z"]..","..(base or "nil")..[[)
+	shell.run("custom","host",]] .. set[a]["x"] .. "," .. set[a]["y"] .. "," .. set[a]["z"] .. "," .. (base or "nil") .. [[)
 else
-	shell.run("gps","host",]]..set[a]["x"]..","..set[a]["y"]..","..set[a]["z"]..[[)
+	shell.run("gps","host",]] .. set[a]["x"] .. "," .. set[a]["y"] .. "," .. set[a]["z"] .. [[)
 end
 ]])
     file.close()
@@ -408,7 +407,7 @@ end
     turtle.turnRight()
     mov.forward()
     turtle.turnRight()
-    peripheral.call("front","turnOn")
+    peripheral.call("front", "turnOn")
     mov.down()
     turtle.suck()
     turtle.select(3)
@@ -417,17 +416,17 @@ end
     -- reboot would be here
     turtle.turnRight()
     --back 3
-    for i = 1,3 do
+    for i = 1, 3 do
         mov.forward()
     end
     turtle.turnLeft()
     mov.forward()
     if a == 1 or a == 3 then
-        for i = 1,3 do
+        for i = 1, 3 do
             mov.down()
         end
     elseif a == 2 or a == 4 then
-        for i = 1,3 do
+        for i = 1, 3 do
             mov.up()
         end
     end
