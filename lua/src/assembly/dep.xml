@@ -35,6 +35,12 @@
             <lineEnding>unix</lineEnding>
         </file>
         <file>
+            <source>src/main/resources/assets/computercraft/lua/rom/programs/gps-deploy.lua</source>
+            <outputDirectory>assets/computercraft/lua/rom/programs</outputDirectory>
+            <destName>gps-deploy</destName>
+            <lineEnding>unix</lineEnding>
+        </file>
+        <file>
             <source>src/main/resources/assets/computercraft/lua/rom/programs/hey.lua</source>
             <outputDirectory>assets/computercraft/lua/rom/programs</outputDirectory>
             <destName>hey</destName>

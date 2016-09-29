@@ -10,36 +10,37 @@ Description:
 Source:
     Taken from https://coronalabs.com/blog/2014/09/02/tutorial-printing-table-contents/
 --]]
-function print_r ( t )
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
+function print_r(t)
+    local print_r_cache = {}
+    local function sub_print_r(t, indent)
         if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
+            print(indent .. "*" .. tostring(t))
         else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
+            print_r_cache[tostring(t)] = true
+            if (type(t) == "table") then
+                for pos, val in pairs(t) do
+                    if (type(val) == "table") then
+                        print(indent .. "[" .. pos .. "] => " .. tostring(t) .. " {")
+                        sub_print_r(val, indent .. string.rep(" ", string.len(pos) + 8))
+                        print(indent .. string.rep(" ", string.len(pos) + 6) .. "}")
+                    elseif (type(val) == "string") then
+                        print(indent .. "[" .. pos .. '] => "' .. val .. '"')
                     else
-                        print(indent.."["..pos.."] => "..tostring(val))
+                        print(indent .. "[" .. pos .. "] => " .. tostring(val))
                     end
                 end
             else
-                print(indent..tostring(t))
+                print(indent .. tostring(t))
             end
         end
     end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
+
+    if (type(t) == "table") then
+        print(tostring(t) .. " {")
+        sub_print_r(t, "  ")
         print("}")
     else
-        sub_print_r(t,"  ")
+        sub_print_r(t, "  ")
     end
     print()
 end
@@ -112,7 +113,7 @@ function registerEvent(eventName, eventFunc)
     end
 
     if _G[DEBUG_FLAG] then
-        print("Registering an event for: "..eventName)
+        print("Registering an event for: " .. eventName)
     end
 
     local eventArray = registeredEvents[eventName]
@@ -131,16 +132,16 @@ function cancelEvent(eventFunc, eventName)
         error("Expected to be provided a function to call", 2)
     end
 
-    local function helper(needle,haystack)
+    local function helper(needle, haystack)
         local removed = false
         if needle and haystack then
-            for idx,ef in pairs(haystack) do
+            for idx, ef in pairs(haystack) do
                 if needle == ef then
                     if _G[DEBUG_FLAG] then
-                        print("Cancelling an event for: "..eventName)
+                        print("Cancelling an event for: " .. eventName)
                     end
 
-                    table.remove(haystack,idx)
+                    table.remove(haystack, idx)
                     removed = true
                     break
                 end
@@ -161,7 +162,7 @@ function cancelEvent(eventFunc, eventName)
             registeredEvents[eventName] = nil
         end
     else
-        for en,eventArray in pairs(registeredEvents) do
+        for en, eventArray in pairs(registeredEvents) do
             removed = helper(eventFunc, eventArray) or removed
             if removed and 0 == table.getn(eventArray) then
                 registeredEvents[en] = nil
@@ -189,7 +190,7 @@ function runEventLoop()
         local eventName = event[1]
         local funcArray = registeredEvents[eventName]
         if funcArray then
-            for _,eventFunc in pairs(funcArray) do
+            for _, eventFunc in pairs(funcArray) do
                 eventFunc(unpack(event))
             end
         end
@@ -211,7 +212,7 @@ Description:
     "When I see a bird that walks like a duck and swims like a duck and quacks like a duck, I call that bird a duck." --James Whitcomb Riley
 --]]
 function isModem(modem)
-    local function helper(tbl,key)
+    local function helper(tbl, key)
         return tbl[key] and "function" == type(tbl[key])
     end
 
@@ -284,10 +285,10 @@ Description:
     in the returned table. Everything else about the return value is the same as that returned by
     peripheral.wrap
 --]]
-function pwrap( _sSide, _pType )
-    local p = peripheral.wrap( _sSide )
+function pwrap(_sSide, _pType)
+    local p = peripheral.wrap(_sSide)
     if p then
-        _pType = _pType or peripheral.getType( _sSide )
+        _pType = _pType or peripheral.getType(_sSide)
         p.pinfo = { pside = _sSide, ptype = _pType }
     end
     return p
@@ -301,18 +302,86 @@ Description:
 Source:
     Taken from the peripheral api by dan200 for the find function.
 --]]
-function pfind( sType, fnFilter )
-    if type( sType ) ~= "string" or (fnFilter ~= nil and type( fnFilter ) ~= "function") then
-        error( "Expected string, [function]", 2 )
+function pfind(sType, fnFilter)
+    if type(sType) ~= "string" or (fnFilter ~= nil and type(fnFilter) ~= "function") then
+        error("Expected string, [function]", 2)
     end
     local tResults = {}
-    for _,sName in ipairs( peripheral.getNames() ) do
-        if peripheral.getType( sName ) == sType then
-            local wrapped = pwrap( sName, sType )
-            if fnFilter == nil or fnFilter( sName, wrapped ) then
-                table.insert( tResults, wrapped )
+    for _, sName in ipairs(peripheral.getNames()) do
+        if peripheral.getType(sName) == sType then
+            local wrapped = pwrap(sName, sType)
+            if fnFilter == nil or fnFilter(sName, wrapped) then
+                table.insert(tResults, wrapped)
             end
         end
     end
-    return table.unpack( tResults )
+    return table.unpack(tResults)
+end
+
+------------------------------------------------------------------------------------------------------------------------
+-- ComputerCraft turtle additions
+------------------------------------------------------------------------------------------------------------------------
+
+--[[
+Description:
+    Counts the number of items in a turtles inventory with the specififed id and metadata
+Example:
+    {
+        count = 1,
+        name = "ComputerCraft::CC-Computer",
+        damage = 16384,
+    }
+--]]
+function countItem(id, meta)
+    if type(id) ~= "string" or nil ~= meta and type(meta) ~= "number" then
+        error("countItem must be called with id(string), [meta(number)]", 2)
+    end
+
+    if not turtle then
+        return 0
+    end
+
+    local count = 0
+    for slot = 1, 16 do
+        local ii = turtle.getItemDetail(slot)
+        if ii and ii.name == id and (meta == nil and ii.damage == 0 or ii.damage == meta) then
+            count = count + ii.count
+        end
+    end
+    return count
+end
+
+--[[
+Description:
+    Determines if there are at least count items of id are contained in the current turtles inventory
+--]]
+function hasItem(id, meta, count)
+    if type(id) ~= "string" or nil ~= meta and type(meta) ~= "number" or nil ~= count and type(count) ~= "number" then
+        error("hasItem must be called with id(string), [meta(number)], [count(number)]", 2)
+    end
+
+    local found = countItem(id, meta)
+    if count then return found >= count end
+    return found > 0
+end
+
+--[[
+Description:
+    Check if the fuel is required. If fuel is not required, or this is not run on a turtle, this function returns false.
+--]]
+function isFuelRequired()
+    if turtle then
+        return type(turtle.getFuelLevel()) ~= "string"
+    end
+    return false
+end
+
+--[[
+Description:
+    Check if the script is running on a turtle. Raise an error if it is not.
+--]]
+function requireTurtle()
+    if not turtle then
+        error("Script must be run on a turtle.", 2)
+    end
 end
