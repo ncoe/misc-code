@@ -336,18 +336,17 @@ function countItem(id, meta)
     if type(id) ~= "string" or nil ~= meta and type(meta) ~= "number" then
         error("countItem must be called with id(string), [meta(number)]", 2)
     end
-
-    if not turtle then
-        return 0
-    end
+    if not turtle then return 0 end
 
     local count = 0
+
     for slot = 1, 16 do
         local ii = turtle.getItemDetail(slot)
         if ii and ii.name == id and (meta == nil and ii.damage == 0 or ii.damage == meta) then
             count = count + ii.count
         end
     end
+
     return count
 end
 
@@ -363,6 +362,62 @@ function hasItem(id, meta, count)
     local found = countItem(id, meta)
     if count then return found >= count end
     return found > 0
+end
+
+--[[
+Description:
+    Find the first slot that has the specified item "id:meta".
+    Select that slot and apply the function to it, returning the result. The signature is () -> boolean.
+    If the specified item is not found, this function returns false.
+    If the function is nil, the slot is select and true is returned.
+--]]
+local selectItemAction = function(id, meta, fn)
+    if type(id) ~= "string" or nil ~= meta and type(meta) ~= "number" then
+        error("Must be called with id(string), [meta(number)]", 3)
+    end
+    if not turtle then return false end
+
+    for slot = 1, 16 do
+        local ii = turtle.getItemDetail(slot)
+        if ii and ii.name == id and (meta == nil and ii.damage == 0 or ii.damage == meta) then
+            turtle.select(slot)
+            return nil == fn or fn()
+        end
+    end
+
+    return false
+end
+
+--[[
+Description:
+    Looks in the inventory for the specified item, and places it in the world if it can.
+--]]
+function placeItem(id, meta)
+    return selectItemAction(id, meta, turtle.place)
+end
+
+--[[
+Description:
+    Looks in the inventory for the specified item, and places it in the world beneath it if it can.
+--]]
+function placeItemDown(id, meta)
+    return selectItemAction(id, meta, turtle.placeDown)
+end
+
+--[[
+Description:
+    Looks in the inventory for the specified item, and places it in the world above it if it can.
+--]]
+function placeItemUp(id, meta)
+    return selectItemAction(id, meta, turtle.placeUp)
+end
+
+--[[
+Description:
+    Looks in the inventory for the specified item, and select the slot that it is in.
+--]]
+function selectItem(id, meta)
+    return selectItemAction(id, meta)
 end
 
 --[[
@@ -384,4 +439,47 @@ function requireTurtle()
     if not turtle then
         error("Script must be run on a turtle.", 2)
     end
+end
+
+local moveTurtle = function(mv,dg,atk,cnt)
+    if nil ~= cnt then
+        if type(cnt) ~= "number" then
+            error("Must be called with a numeric parameter or nil", 3)
+        end
+    else
+        cnt = 1
+    end
+
+    for _ = 1, cnt do
+        while not mv() do
+            if not dg() or atk() then
+                if isFuelRequired() then
+                    print("Additional fuel required? ", turtle.getFuelLevel(), "/", turtle.getFuelLimit())
+                    -- todo refuel
+                else
+                    print("Movement is impossible?")
+                end
+                return false
+            end
+        end
+    end
+
+    return true
+end
+
+function moveUp(dist)
+    return moveTurtle(turtle.up, turtle.digUp, turtle.attackUp, dist)
+end
+
+function moveDown(dist)
+    return moveTurtle(turtle.down, turtle.digDown, turtle.attackDown, dist)
+end
+
+function moveForward(dist)
+    return moveTurtle(turtle.forward, turtle.dig, turtle.attack, dist)
+end
+
+function moveBackward(dist)
+    local nop = function() return false end
+    return moveTurtle(turtle.back, nop, nop, dist)
 end
