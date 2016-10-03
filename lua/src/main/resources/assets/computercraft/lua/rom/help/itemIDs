@@ -1,0 +1,19 @@
+minecraft:diamond_axe               Diamond Axe (for felling turtle)
+minecraft:diamond_hoe               Diamond Hoe (for farming turtle)
+minecraft:diamond_pickaxe           Diamond Pickaxe (for mining turtle)
+minecraft:diamond_shovel            Diamond Shovel (for digging turtle)
+minecraft:diamond_sword             Diamond Sword (for melee turtle)
+minecraft:stained_hardened_clay:*   * Stained Clay
+minecraft:wool:*                    * Wool
+
+ComputerCraft:CC-Computer:0         Normal Computer
+ComputerCraft:CC-Computer:16384     Advanced Computer
+ComputerCraft:CC-Peripheral:0       Disk Drive
+ComputerCraft:CC-Peripheral:1       Wireless Modem
+ComputerCraft:diskExpanded:0        Floppy Disk (several colors of it)
+ComputerCraft:disk:0                Floppy Disk
+
+EnderStorage:enderChest:*           Ender chest, metadata encodes the colors
+                                    16 * (16 * a + b) + c
+
+OpenPeripheral:sensor:0             Sensor

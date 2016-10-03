@@ -2,6 +2,8 @@
 --Original link can be found here:
 --http://www.computercraft.info/forums2/index.php?/topic/3088-how-to-guide-gps-global-position-system/page__p__28333#entry28333
 --------------------------------------------------------------------------
+-- NOTE: Assumes that the turtle is facing the positive z-axis
+--------------------------------------------------------------------------
 
 local DEBUG = false
 local loaded = ncore or os.loadAPI("ncore")
@@ -13,7 +15,6 @@ ncore.requireTurtle()
 --- Handle globals and argument parsing
 --------------------------------------------------------------------------
 
-local height = 255
 local function printUsage()
     print("")
     print("Usages:")
@@ -60,15 +61,6 @@ local computer = false
 local modem = false
 local diskdrive = false
 local disk = false
-
--- References
--- ComputerCraft:CC-Computer:0      Normal Computer
--- ComputerCraft:CC-Computer:16384  Advanced Computer
--- ComputerCraft:CC-Peripheral:0    Disk Drive
--- ComputerCraft:CC-Peripheral:1    Wireless Modem
--- ComputerCraft:diskExpanded:0     Floppy Disk (several colors of it)
--- ComputerCraft:disk:0             Floppy Disk
--- EnderStorage:enderChest:*        Ender chest, metadata encodes the colors
 
 local tempCnt = ncore.countItem("ComputerCraft:CC-Computer", 0)
 tempCnt = tempCnt + ncore.countItem("ComputerCraft:CC-Computer", 16384)
@@ -122,7 +114,7 @@ end
 ncore.moveDown()
 
 -- TODO: This may assume that the turtle is facing a specific direction
--- Deploy
+-- Deploy, assumes facing +Z direction
 for sat = 1, 4 do
     if not ncore.moveForward(2) then
         print("L1. Could not move forward 2")

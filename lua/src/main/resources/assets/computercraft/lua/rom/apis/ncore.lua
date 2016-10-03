@@ -441,7 +441,7 @@ function requireTurtle()
     end
 end
 
-local moveTurtle = function(mv,dg,atk,cnt)
+local moveTurtle = function(mv, dg, atk, cnt)
     if nil ~= cnt then
         if type(cnt) ~= "number" then
             error("Must be called with a numeric parameter or nil", 3)
@@ -467,19 +467,142 @@ local moveTurtle = function(mv,dg,atk,cnt)
     return true
 end
 
+--[[
+Description:
+    Tries to move a turtle up the specified number of blocks. If nil is passed, the turtle will only attempt to move 1 block
+--]]
 function moveUp(dist)
     return moveTurtle(turtle.up, turtle.digUp, turtle.attackUp, dist)
 end
 
+--[[
+Description:
+    Tries to move a turtle down the specified number of blocks. If nil is passed, the turtle will only attempt to move 1 block
+--]]
 function moveDown(dist)
     return moveTurtle(turtle.down, turtle.digDown, turtle.attackDown, dist)
 end
 
+--[[
+Description:
+    Tries to move a turtle forward the specified number of blocks. If nil is passed, the turtle will only attempt to move 1 block
+--]]
 function moveForward(dist)
     return moveTurtle(turtle.forward, turtle.dig, turtle.attack, dist)
 end
 
+--[[
+Description:
+    Tries to move a turtle back the specified number of blocks. If nil is passed, the turtle will only attempt to move 1 block
+--]]
 function moveBackward(dist)
     local nop = function() return false end
     return moveTurtle(turtle.back, nop, nop, dist)
+end
+
+--[[
+Description:
+    Moves all items so that they are consecutive, and are in the fewest stacks required
+--]]
+function compactInventory()
+    if not turtle then return false end
+
+    for slot = 1, 15 do
+        --print("slot: ", slot)
+        local done = true
+        for next = slot + 1, 16 do
+            --print("next: ", next)
+            if turtle.getItemCount(next) > 0 then
+                turtle.select(next)
+                if turtle.getItemCount(slot) == 0 or turtle.compareTo(slot) then
+                    turtle.transferTo(slot) -- Transfer as many items as possible
+                    done = false
+                end
+            end
+
+            --os.sleep(0.5)
+        end
+        if done then break end
+    end
+
+    return nil
+end
+
+--[[
+Description:
+    Attempts to find an empty slot in a turtle's inventory
+--]]
+function selectEmptySlot()
+    if not turtle then return false end
+
+    for slot = 1, 16 do
+        if turtle.getItemCount(slot) == 0 then
+            turtle.select(slot)
+            return true
+        end
+    end
+
+    return false
+end
+
+--[[
+Description:
+    Returns a pair of detals as returned by getItemDetail for the left and right side equipped items
+--]]
+function getTurtleEquipment()
+    if not turtle then return nil, nil end
+
+    if not selectEmptySlot() then
+        compactInventory()
+        if not selectEmptySlot() then
+            error("No free slots to determine what the turtle has equipped", 2)
+        end
+    end
+
+    turtle.equipLeft()  -- unequip
+    local ld = turtle.getItemDetail()
+    turtle.equipLeft()  -- re-equip
+
+    turtle.equipRight() -- unequip
+    local rd = turtle.getItemDetail()
+    turtle.equipRight() -- re-quip
+
+    return ld, rd
+end
+
+------------------------------------------------------------------------------------------------------------------------
+-- Color additions
+------------------------------------------------------------------------------------------------------------------------
+
+-- Meta data for things like wool and clay, etc...
+ColorMeta = {
+    white = 0,
+    orange = 1,
+    magenta = 2,
+    lightBlue = 3,
+    yellow = 4,
+    lime = 5,
+    pink = 6,
+    gray = 7,
+    lightGray = 8,
+    cyan = 9,
+    purple = 10,
+    blue = 11,
+    brown = 12,
+    green = 13,
+    red = 14,
+    black = 15,
+}
+
+--[[
+Description:
+    Calculates the meta data for a specific ender chest that would be expected given the
+    three color arguments provided. The public table ColorMeta can be used to provided
+    meaningful names to the color metadata.
+--]]
+function getEnderMeta(a, b, c)
+    if type(a) ~= "number" and type(b) ~= "number" and type(c) ~= "number" then
+        error("Expected 3 numeric arguemtns", 2)
+    end
+    return 16 * (16 * a + b) + c
 end

@@ -1,1 +1,6 @@
-TODO add help for the gps-deploy program
+This program assumes that the turtle is facing positive Z.
+You can either deploy getting the coordinates from existing
+GPS satellites with `gps-deploy locate` or by manually by
+specifying `gps-deploy X Z`. The satellites will be deployed
+at the top of the world (the first height that a turtle
+cannot move, minus one block)
