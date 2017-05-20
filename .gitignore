@@ -9,3 +9,5 @@
 
 lua/minecraft/CCResourcePackExample1.zip
 *.exe
+*.suo
+*.user
