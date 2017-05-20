@@ -196,7 +196,7 @@ function runEventLoop()
         end
 
         -- Fun fact: If you do not break on "terminate", then the loop will execute until the computer is shutdown.
-        if "terminate" == eventName or "kill-9" == eventName then
+        if EVENT_TERMINATE == eventName or "kill-9" == eventName then
             break
         end
     end
@@ -499,6 +499,8 @@ function moveBackward(dist)
     local nop = function() return false end
     return moveTurtle(turtle.back, nop, nop, dist)
 end
+
+-- todo: add turn and gps wrapping to track and update position. modify existing functionality accordingly
 
 --[[
 Description:

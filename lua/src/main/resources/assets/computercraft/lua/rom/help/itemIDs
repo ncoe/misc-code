@@ -1,10 +1,38 @@
+minecraft:bedrock
+minecraft:coal:0                    Coal
+minecraft:coal:1                    Charcoal
+minecraft:cobblestone
+minecraft:dirt:0                    Dirt
+minecraft:dirt:2                    Podzol
+minecraft:double_stone_slab         Stone Slab (w/ horizontal line)
+minecraft:double_stone_slab:8       Stone Slab (smooth block)
+minecraft:glass
+minecraft:glowstone
+minecraft:grass                     Grass
+minecraft:lava_bucket
+minecraft:mossy_cobblestone
+minecraft:redstone_block
+minecraft:sand                      Sand
+minecraft:sand:1                    Red Sand
+minecraft:sandstone
+minecraft:stained_glass:*           * Stained Glass
+minecraft:stained_hardened_clay:*   * Stained Clay
+minecraft:stone
+minecraft:stone_slab:0              Stone Slab
+minecraft:stone_slab:1              Sandstone Slab
+minecraft:stone_slab:3              Cobblestone Slab
+minecraft:stone_slab:4              Brick Slab
+minecraft:stone_slab:5              Stone Brick Slab
+minecraft:stone_slab:6              Nether Brick Slab
+minecraft:stone_slab:7              Quartz Slab
+minecraft:stonebrick
+minecraft:wool:*                    * Wool
+
 minecraft:diamond_axe               Diamond Axe (for felling turtle)
 minecraft:diamond_hoe               Diamond Hoe (for farming turtle)
 minecraft:diamond_pickaxe           Diamond Pickaxe (for mining turtle)
 minecraft:diamond_shovel            Diamond Shovel (for digging turtle)
 minecraft:diamond_sword             Diamond Sword (for melee turtle)
-minecraft:stained_hardened_clay:*   * Stained Clay
-minecraft:wool:*                    * Wool
 
 ComputerCraft:CC-Computer:0         Normal Computer
 ComputerCraft:CC-Computer:16384     Advanced Computer
@@ -15,5 +43,22 @@ ComputerCraft:disk:0                Floppy Disk
 
 EnderStorage:enderChest:*           Ender chest, metadata encodes the colors
                                     16 * (16 * a + b) + c
+
+ExtraUtilities:cobblestone_compressed:0     Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:1     Double Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:2     Triple Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:3     Quadruple Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:4     Quintuple Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:5     Sextuple Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:6     Septuple Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:7     Octuple Compressed Cobblestone
+ExtraUtilities:cobblestone_compressed:8     Compressed Dirt
+ExtraUtilities:cobblestone_compressed:9     Double Compressed Dirt
+ExtraUtilities:cobblestone_compressed:10    Triple Compressed Dirt
+ExtraUtilities:cobblestone_compressed:11    Quadruple Compressed Dirt
+ExtraUtilities:cobblestone_compressed:12    Compressed Gravel
+ExtraUtilities:cobblestone_compressed:13    Double Compressed Gravel
+ExtraUtilities:cobblestone_compressed:14    Compressed Sand
+ExtraUtilities:cobblestone_compressed:15    Double Compressed Sand
 
 OpenPeripheral:sensor:0             Sensor
