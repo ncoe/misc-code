@@ -1,3 +1,8 @@
+/* TODO"
+ * - Be able to read config file for running in smaller parts (or infer current progress)
+ * - Reduce the output by removing symmetries (hz-f, v-f, r90, r180, r270?, combinations?)
+ */
+
 import std.stdio;
 
 enum GRID_SIZE = 25;
@@ -50,28 +55,36 @@ void fillTbl() {
     }
 }
 
-void main() {
+void main(string[] args) {
     fillTbl();
 
-    auto g = Grid(GRID_SIZE);
+    Grid g;
+    if (args.length > 1) {
+        writeln("Reading from file: ", args[1]);
+        g = readGrid(args[1]);
+    } else {
+        writeln("Starting from scratch.");
 
-    g[] = CellState.UNKNOWN;
-    
-    // 101
-    // 101
-    // 101
-    // g[$/2-1..$/2+2, $/2-1] = CellState.ALIVE;
-    // g[$/2-1..$/2+2, $/2]   = CellState.DEAD;
-    // g[$/2-1..$/2+2, $/2+1] = CellState.ALIVE;
+        g = Grid(GRID_SIZE);
+        g[] = CellState.UNKNOWN;
 
-    // 111
-    // 000
-    // 111
-    g[$/2-1, $/2-1..$/2+2] = CellState.ALIVE;
-    g[$/2,   $/2-1..$/2+2] = CellState.DEAD;
-    g[$/2+1, $/2-1..$/2+2] = CellState.ALIVE;
+        // // 101
+        // // 101
+        // // 101
+        // g[$/2-1..$/2+2, $/2-1] = CellState.ALIVE;
+        // g[$/2-1..$/2+2, $/2]   = CellState.DEAD;
+        // g[$/2-1..$/2+2, $/2+1] = CellState.ALIVE;
+
+        // 111
+        // 000
+        // 111
+        g[$/2-1, $/2-1..$/2+2] = CellState.ALIVE;
+        g[$/2,   $/2-1..$/2+2] = CellState.DEAD;
+        g[$/2+1, $/2-1..$/2+2] = CellState.ALIVE;
+    }
 
     writeln(g);
+    writeln;
     stepback(g);
 }
 
@@ -113,6 +126,16 @@ struct Grid {
     this(this) {
         // Make sure that changes from making a copy of a grid are not visible
         gridArr = gridArr.dup;
+    }
+
+    /// Get the height of the grid
+    size_t getHeight() const {
+        return this.height;
+    }
+
+    /// Get the width of the grid
+    size_t getWidth() const {
+        return this.width;
     }
 
     /// Get the index of the last element.
@@ -206,6 +229,9 @@ struct Grid {
         return opIndexAssign(state, ys, xs);
     }
 
+/*
+    // This code create a range that expresses successive generations of GoL
+
     /// Is the grid empty
     enum empty = false;
 
@@ -250,6 +276,16 @@ struct Grid {
         }
         this.gridArr = h.gridArr;
     }
+*/
+    int countLiveCells() const {
+        int cnt;
+        foreach(cell; this.gridArr) {
+            if (CellState.ALIVE == cell) {
+                ++cnt;
+            }
+        }
+        return cnt;
+    }
 
     /// Format and write to the sink according to the specified format
     void toString(CHAR)(scope void delegate(const(CHAR)[]) sink, FormatSpec!CHAR fmt) const {
@@ -259,7 +295,7 @@ struct Grid {
         throw new Exception("Unknown format specifier: " + fmt.spec);
     }
 
-    // Format and write to the sink
+    /// Format and write to the sink
     void toString(CHAR)(scope void delegate(const(CHAR)[]) sink) const {
         import std.format;
 
@@ -279,12 +315,14 @@ struct Grid {
             }
         }
 
-        int col;
+        int row, col;
         void formatCell(CellState cs) {
             printCellState(cs);
             if (++col >= this.width) {
                 col = 0;
-                sink("\n");
+                if (++row < this.height) {
+                    sink("\n");
+                }
             }
         }
 
@@ -294,17 +332,58 @@ struct Grid {
     }
 }
 
+Grid readGrid(string filename) {
+    import std.exception;
+    import std.file;
+    import std.format;
+    import std.string;
+    enforce(exists(filename), "Could not find the specified file");
+
+    auto src = File(filename, "r");
+    int height, width;
+
+    string leader = src.readln();
+    leader.formattedRead!"%s %s"(height, width);
+
+    Grid g = Grid(height, width);
+    foreach(row; 0..height) {
+        auto line = chomp(src.readln);
+        foreach (col, ch; line) {
+            switch(ch) {
+                case '0':
+                    g[row, col] = CellState.DEAD;
+                    break;
+                case '1':
+                    g[row, col] = CellState.ALIVE;
+                    break;
+                default:
+                    g[row, col] = CellState.UNKNOWN;
+                    break;
+            }
+        }
+    }
+
+    return g;
+}
+
+void writeGrid(const ref Grid g) {
+    writeln(g.getHeight, " ", g.getWidth);
+    writeln(g);
+}
+
 void stepback(Grid g, int row = 0, int col = 0) {
-    Grid p = Grid(GRID_SIZE);
+    Grid p = Grid(g.getHeight, g.getWidth);
     p[] = CellState.UNKNOWN;
     p[$/2-1..$/2+2,$/2-1..$/2+2] = CellState.DEAD;
 
-    stepbackImpl(g, p, row, col);
+    stepbackImpl(g, p, row, col, &writeGrid);
 }
 
-void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, int depth = 0) {
-    outer: foreach(int i; row..g.height) {
-        inner: foreach(int j; col..g.width) {
+/// Write to the sink all grids that could have preceeded g. The parameter q is a partial (or complete) solution
+/// that has been assembled to this point
+void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, scope void function(const ref Grid) sink) {
+    foreach(int i; row..g.height) {
+        foreach(int j; col..g.width) {
             if (CellState.ALIVE == g[i,j]) {
                 foreach (k,entry; lookupTbl) {
                     if (eq(q[i-1,j-1], entry[0]) && eq(q[i-1,j], entry[1]) && eq(q[i-1,j+1], entry[2])
@@ -324,7 +403,7 @@ void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, int depth = 0)
                         setNeighbor(temp, i+1, j,   entry[7]);
                         setNeighbor(temp, i+1, j+1, entry[8]);
 
-                        stepbackImpl(g, temp, i, j + 1, depth + 1);
+                        stepbackImpl(g, temp, i, j + 1, sink);
                     }
                 }
 
@@ -333,10 +412,16 @@ void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, int depth = 0)
             }
         }
 
+        // Forcably reset the initial column position os that the solution space is properly traversed
+        // May want to figure out a better traversal method.
         col = 0;
     }
 
-    writeln(q);
+    // No more live cells have been observed
+    // Write the changes that have been made to q in the previous stack frame
+    // This should probably be replaced with a sink method
+    //writeln(q);
+    sink(q);
 }
 
 /// Alter a grid at the specifying coordinates
