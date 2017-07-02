@@ -5,55 +5,12 @@
 
 import std.stdio;
 
+// Default if not otherwise set
 enum GRID_SIZE = 25;
 
-/// Determine if a bit is set
-bool bitTest(int num, size_t pos) {
-    return (num & (1 << pos)) > 0;
-}
-
-unittest {
-    assert(!bitTest(0,0));
-    assert(bitTest(1,0));
-
-    assert(!bitTest(1,1));
-    assert(bitTest(2,1));
-}
-
+// Used to determine valid previous states in the grid.
+// This table if populated by fillTbl.
 bool[9][] lookupTbl;
-
-/// Construct a lookup table for what neigbors previously allow for a live cell now
-void fillTbl() {
-    import core.bitop;
-    foreach(num; 0..256) {
-        auto cnt = popcnt(num);
-
-        debug auto base = ((num & 0xF0) << 1) | (num & 0x0F);
-        // 2,3 to keep a live cell alive
-        // 3 to bring a dead cell to life
-        if (cnt == 2) {
-            debug writefln("%08b | %09b", num, base | 0x10);
-            lookupTbl ~= [
-                bitTest(num, 7), bitTest(num, 6), bitTest(num, 5), bitTest(num, 4),
-                true,
-                bitTest(num, 3), bitTest(num, 2), bitTest(num, 1), bitTest(num, 0)
-            ];
-        } else if (cnt == 3) {
-            debug writefln("%08b | %09b", num, base);
-            lookupTbl ~= [
-                bitTest(num, 7), bitTest(num, 6), bitTest(num, 5), bitTest(num, 4),
-                false,
-                bitTest(num, 3), bitTest(num, 2), bitTest(num, 1), bitTest(num, 0)
-            ];
-            debug writefln("%08b | %09b", num, base | 0x10);
-            lookupTbl ~= [
-                bitTest(num, 7), bitTest(num, 6), bitTest(num, 5), bitTest(num, 4),
-                true,
-                bitTest(num, 3), bitTest(num, 2), bitTest(num, 1), bitTest(num, 0)
-            ];
-        }
-    }
-}
 
 void main(string[] args) {
     fillTbl();
@@ -95,11 +52,7 @@ enum CellState {
     UNKNOWN,
 }
 
-bool eq(CellState a, bool b) {
-    return  (b && CellState.DEAD != a)
-        || (!b && CellState.ALIVE != a);
-}
-
+/// Represents a grid for GoL.
 struct Grid {
     private:
 
@@ -299,18 +252,16 @@ struct Grid {
     void toString(CHAR)(scope void delegate(const(CHAR)[]) sink) const {
         import std.format;
 
-        auto sSpec = singleSpec("%s");
-
         void printCellState(CellState cs) {
             final switch(cs) with (CellState) {
                 case UNKNOWN:
-                    formatValue(sink, "*", sSpec);
+                    sink("*");
                     break;
                 case ALIVE:
-                    formatValue(sink, "1", sSpec);
+                    sink("1");
                     break;
                 case DEAD:
-                    formatValue(sink, "0", sSpec);
+                    sink("0");
                     break;
             }
         }
@@ -326,12 +277,68 @@ struct Grid {
             }
         }
 
+        auto sSpec = singleSpec("%s");
+        formatValue(sink, this.height, sSpec);
+        sink(" ");
+        formatValue(sink, this.width, sSpec);
+        sink("\n");
         foreach(cell; gridArr) {
             formatCell(cell);
         }
     }
 }
 
+/// Interface allowing for stateful sinks for grids
+interface GridSink {
+    void sink(const ref Grid);
+}
+
+/// Sink that writes a grid to standard output
+class StdoutSink : GridSink {
+    void sink(const ref Grid g) {
+        writeln(g);
+    }
+}
+
+/// Sink that writes grids to a specific directory, and a seperate file for each grid written.
+class FileSink : GridSink {
+    private string folder;
+    private int suffix;
+
+    this(string folder) {
+        this.folder = folder;
+    }
+
+    void sink(const ref Grid g) {
+        import std.file;
+        import std.format;
+
+        if (!exists(folder)) {
+            mkdir(folder);
+        }
+
+        auto filename = format!"%s/grid_%04d.txt"(folder, ++suffix);
+        auto sout = File(filename, "w");
+
+        sout.writeln(g);
+    }
+}
+
+/// Determine if a bit is set
+bool bitTest(int num, size_t pos) {
+    return (num & (1 << pos)) > 0;
+}
+
+/// bitTest unittests
+unittest {
+    assert(!bitTest(0,0));
+    assert(bitTest(1,0));
+
+    assert(!bitTest(1,1));
+    assert(bitTest(2,1));
+}
+
+/// Reads a grid configuration
 Grid readGrid(string filename) {
     import std.exception;
     import std.file;
@@ -366,22 +373,20 @@ Grid readGrid(string filename) {
     return g;
 }
 
-void writeGrid(const ref Grid g) {
-    writeln(g.getHeight, " ", g.getWidth);
-    writeln(g);
-}
-
-void stepback(Grid g, int row = 0, int col = 0) {
+/// Write all possible previous states to the provided grid
+void stepback(Grid g) {
     Grid p = Grid(g.getHeight, g.getWidth);
     p[] = CellState.UNKNOWN;
     p[$/2-1..$/2+2,$/2-1..$/2+2] = CellState.DEAD;
 
-    stepbackImpl(g, p, row, col, &writeGrid);
+    // GridSink gs = new StdoutSink();
+    GridSink gs = new FileSink("gen.00");
+    stepbackImpl(g, p, 0, 0, gs);
 }
 
 /// Write to the sink all grids that could have preceeded g. The parameter q is a partial (or complete) solution
 /// that has been assembled to this point
-void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, scope void function(const ref Grid) sink) {
+void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, GridSink gs) {
     foreach(int i; row..g.height) {
         foreach(int j; col..g.width) {
             if (CellState.ALIVE == g[i,j]) {
@@ -403,7 +408,7 @@ void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, scope void fun
                         setNeighbor(temp, i+1, j,   entry[7]);
                         setNeighbor(temp, i+1, j+1, entry[8]);
 
-                        stepbackImpl(g, temp, i, j + 1, sink);
+                        stepbackImpl(g, temp, i, j + 1, gs);
                     }
                 }
 
@@ -419,9 +424,46 @@ void stepbackImpl(const ref Grid g, ref Grid q, int row, int col, scope void fun
 
     // No more live cells have been observed
     // Write the changes that have been made to q in the previous stack frame
-    // This should probably be replaced with a sink method
-    //writeln(q);
-    sink(q);
+    gs.sink(q);
+}
+
+/// Construct a lookup table for what neigbors previously allow for a live cell now
+void fillTbl() {
+    import core.bitop;
+    foreach(num; 0..256) {
+        auto cnt = popcnt(num);
+
+        debug auto base = ((num & 0xF0) << 1) | (num & 0x0F);
+        // 2,3 to keep a live cell alive
+        // 3 to bring a dead cell to life
+        if (cnt == 2) {
+            debug writefln("%08b | %09b", num, base | 0x10);
+            lookupTbl ~= [
+                bitTest(num, 7), bitTest(num, 6), bitTest(num, 5), bitTest(num, 4),
+                true,
+                bitTest(num, 3), bitTest(num, 2), bitTest(num, 1), bitTest(num, 0)
+            ];
+        } else if (cnt == 3) {
+            debug writefln("%08b | %09b", num, base);
+            lookupTbl ~= [
+                bitTest(num, 7), bitTest(num, 6), bitTest(num, 5), bitTest(num, 4),
+                false,
+                bitTest(num, 3), bitTest(num, 2), bitTest(num, 1), bitTest(num, 0)
+            ];
+            debug writefln("%08b | %09b", num, base | 0x10);
+            lookupTbl ~= [
+                bitTest(num, 7), bitTest(num, 6), bitTest(num, 5), bitTest(num, 4),
+                true,
+                bitTest(num, 3), bitTest(num, 2), bitTest(num, 1), bitTest(num, 0)
+            ];
+        }
+    }
+}
+
+/// Determine if a cell state can be equal to a boolean (alive or dead)
+bool eq(CellState a, bool b) {
+    return  (b && CellState.DEAD != a)
+        || (!b && CellState.ALIVE != a);
 }
 
 /// Alter a grid at the specifying coordinates
