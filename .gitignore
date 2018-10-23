@@ -1,13 +1,26 @@
-/d/fakecas/*.userprefs
-/d/fakecas/*.exe
-/d/fakecas/*.dll
-/d/fakecas/dub.selections.json
-/d/fakecas/config
-/lua/.idea
-/lua/target
-/lua/*.iml
-
-lua/minecraft/CCResourcePackExample1.zip
+// Binary Files
+*.dll
 *.exe
+*.userprefs
+*.zip
+
+// Dub Files
+dub.selections.json
+
+// Intellij Files
+.idea
+*.iml
+**/target/*
+
+// Visual Studio Files
+*.csproj
+*.pdb
+*.sln
 *.suo
 *.user
+**/.vs/*
+**/bin/*
+**/obj/*
+
+// Specific Files and Folders
+d/fakecas/config/server.ini
