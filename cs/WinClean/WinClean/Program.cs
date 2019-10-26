@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace WinClean {
     class Program {
-        private static Regex rx = new Regex("\\.ms[p]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex RX = new Regex("\\.ms[p]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static HashSet<string> NameInstalledPatches() {
             //Must do this to read the right registry values for a 64-bit machine. The 32-bit view is default.
@@ -18,7 +18,7 @@ namespace WinClean {
                 RegistryKey subKey = patchKey.OpenSubKey(subKeyName);
                 object localPackage = subKey.GetValue("LocalPackage");
                 if (localPackage is string path) {
-                    if (rx.IsMatch(path)) {
+                    if (RX.IsMatch(path)) {
                         patchSet.Add(path.ToUpperInvariant());
                     }
                 }
@@ -29,7 +29,7 @@ namespace WinClean {
         private static HashSet<string> NamePatchFiles() {
             HashSet<string> fileSet = new HashSet<string>();
             foreach (string file in Directory.EnumerateFiles("c:/windows/installer")) {
-                if (rx.IsMatch(file)) {
+                if (RX.IsMatch(file)) {
                     fileSet.Add(file.ToUpperInvariant());
                 }
             }
@@ -54,7 +54,7 @@ namespace WinClean {
             double kiloBytes = totalBytes / 1024;
             double megaBytes = kiloBytes / 1024;
             double gigaBytes = megaBytes / 1024;
-            Console.WriteLine("Total size is {0}GB or {1}KB spread over {2} files.", gigaBytes, megaBytes, discrepencyCount);
+            Console.WriteLine("Total size is {0:F2}GB or {1:F2}KB spread over {2} files.", gigaBytes, megaBytes, discrepencyCount);
             Console.WriteLine();
 
             Console.Write("Move 50 files (Y/N)? ");
